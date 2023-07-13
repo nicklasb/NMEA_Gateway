@@ -1,0 +1,17 @@
+dependencies:
+  # Required IDF version
+  idf: ">=4.1"
+  RadioLib:
+    git: https://github.com/jgromes/RadioLib.git
+  robusto-base:
+    git: https://github.com/nicklasb/RobArch.git
+    path: components/robusto-base
+  robusto-concurrency:
+    git: https://github.com/nicklasb/RobArch.git
+    path: components/robusto-concurrency
+  robusto-network:
+    git: https://github.com/nicklasb/RobArch.git
+    path: components/robusto-network
+  robusto-broker:
+    git: https://github.com/nicklasb/RobArch.git
+    path: components/robusto-broker
