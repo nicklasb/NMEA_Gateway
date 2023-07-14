@@ -1,0 +1,44 @@
+dependencies:
+  RadioLib:
+    component_hash: 215d6580026a94b2d5e3ef63e45dbc02d8350080538bcb1553bc0c87bcebf8e2
+    source:
+      git: https://github.com/jgromes/RadioLib.git
+      path: .
+      type: git
+    version: 5974da27de01cb74e35d2c204a361722acc7de21
+  idf:
+    component_hash: null
+    source:
+      type: idf
+    version: 5.0.1
+  robusto-base:
+    component_hash: 464cfd68ff5dc8f8d7242fef3fc6ee397ab2ea36630d00a8ee46772ded3f4eb6
+    source:
+      git: https://github.com/nicklasb/RobArch.git
+      path: components/robusto-base
+      type: git
+    version: 1821f0f481062c636b27fd9241355b468dad58d3
+  robusto-broker:
+    component_hash: e56cf575e4135b348c578e0e1e6d951e927ddc05ef6d34b0ac687a8110ab25e6
+    source:
+      git: https://github.com/nicklasb/RobArch.git
+      path: components/robusto-broker
+      type: git
+    version: 1821f0f481062c636b27fd9241355b468dad58d3
+  robusto-concurrency:
+    component_hash: 48531da888568131f0c97de1d7b1ee99175e6ecb4850b346592b22a3b2bec480
+    source:
+      git: https://github.com/nicklasb/RobArch.git
+      path: components/robusto-concurrency
+      type: git
+    version: 1821f0f481062c636b27fd9241355b468dad58d3
+  robusto-network:
+    component_hash: ca955899607f14cbd656ad56be8d8c1c0342651aa9e1d60a32d4e7ad94b08be7
+    source:
+      git: https://github.com/nicklasb/RobArch.git
+      path: components/robusto-network
+      type: git
+    version: 1821f0f481062c636b27fd9241355b468dad58d3
+manifest_hash: dc2c192220313375a958cf5018edc54db9d48cdabc9cb725c81f698a27217c94
+target: esp32
+version: 1.0.0
