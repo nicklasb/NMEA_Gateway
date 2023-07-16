@@ -15,3 +15,8 @@ dependencies:
   robusto-broker:
     git: https://github.com/nicklasb/RobArch.git
     path: components/robusto-broker
+  NMEA2000:
+    git: https://github.com/phatpaul/NMEA2000.git
+  NMEA2000_esp32:
+    git: https://github.com/phatpaul/NMEA2000_esp32.git
+

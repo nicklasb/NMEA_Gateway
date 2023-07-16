@@ -307,6 +307,13 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# NMEA Gateway config
+#
+CONFIG_CAN_TX_IDX=5
+CONFIG_CAN_RX_IDX=6
+# end of NMEA Gateway config
+
+#
 # Robusto Configuration
 #
 

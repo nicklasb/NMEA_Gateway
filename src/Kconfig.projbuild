@@ -1,0 +1,14 @@
+# Kconfig file for the NMEA Gateway project
+menu "NMEA Gateway config"
+    config CAN_TX_IDX
+        int "GPIO of NMEA2000/CAN TX"
+        default 5
+        help
+            The GPIO of the NMEA2000/CAN transmitter
+    config CAN_RX_IDX
+        int "GPIO of NMEA2000/CAN RX"
+        default 6
+        help
+            The GPIO of the NMEA2000/CAN receiver
+endmenu
+
