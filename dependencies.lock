@@ -46,6 +46,6 @@ dependencies:
       path: components/robusto-network
       type: git
     version: 1821f0f481062c636b27fd9241355b468dad58d3
-manifest_hash: 989560b335cef422612689d3d31ae919ed6c57f1e29268888b1f6a8333f48584
+manifest_hash: 586cd05b7760fcc4bb83a1d68c54bf3319e915971b2c04054c721fe4d2cb3420
 target: esp32
 version: 1.0.0
