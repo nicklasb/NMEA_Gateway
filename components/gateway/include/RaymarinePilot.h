@@ -1,6 +1,5 @@
 
-#ifndef _RaymarinePilot_H_
-#define _RaymarinePilot_H_
+#pragma once
 
 #include <stdint.h>
 
@@ -61,5 +60,3 @@
     }
   };
 
-
-#endif
