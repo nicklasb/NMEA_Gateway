@@ -1,0 +1,51 @@
+dependencies:
+  NMEA2000:
+    component_hash: 10623a9f05d253abba2dfa57aa17c4139dd9ac1adf23616d57692d2836b87afe
+    source:
+      git: https://github.com/phatpaul/NMEA2000.git
+      path: .
+      type: git
+    version: e5e75edf96db59058daaea4c2f9b4dc457e7a664
+  NMEA2000_esp32:
+    component_hash: 12e491bd32b987b62f6deb03e65fa6091e932542d0c9819408a44c43d616660b
+    source:
+      git: https://github.com/phatpaul/NMEA2000_esp32.git
+      path: .
+      type: git
+    version: 2a22c3c1640bdada58a474a0d2789f86a58ec73d
+  RadioLib:
+    component_hash: 15b021e33447e575b432464e8ed7fe3156492c0605e4636cd71b33bdf6cd4330
+    source:
+      git: https://github.com/jgromes/RadioLib.git
+      path: .
+      type: git
+    version: 5e9b60a4b42c9bdde4b56e63f2b92ceef1e03c20
+  idf:
+    component_hash: null
+    source:
+      type: idf
+    version: 5.0.2
+  robusto-base:
+    component_hash: e831281557627898320f758f8b1e6d6d2134d4e302b92c4e8278e20c38dc9419
+    source:
+      git: https://github.com/nicklasb/RobArch.git
+      path: components/robusto-base
+      type: git
+    version: d8f8ea8f7a33a5d54b3f5e52dfcbedb3816b549b
+  robusto-concurrency:
+    component_hash: 0b48f6e06b7cb8a78ceb834447f5886bba8a8500a31263ee4427dcc98c4ed861
+    source:
+      git: https://github.com/nicklasb/RobArch.git
+      path: components/robusto-concurrency
+      type: git
+    version: d8f8ea8f7a33a5d54b3f5e52dfcbedb3816b549b
+  robusto-network:
+    component_hash: 80917647510f37633de0aff755c15d16641c4c02c1b0853201bf213bb6d33a60
+    source:
+      git: https://github.com/nicklasb/RobArch.git
+      path: components/robusto-network
+      type: git
+    version: d8f8ea8f7a33a5d54b3f5e52dfcbedb3816b549b
+manifest_hash: 6ec493ea8b4ac6041197aa74c6cd0e961e49873c182f74042ac79e9980ed1b94
+target: esp32
+version: 1.0.0
