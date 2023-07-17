@@ -17,4 +17,3 @@ dependencies:
   NMEA2000_esp32:
     git: https://github.com/phatpaul/NMEA2000_esp32.git
 
-    
