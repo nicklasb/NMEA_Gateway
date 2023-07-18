@@ -1,17 +1,10 @@
 dependencies:
   # Required IDF version
   idf: ">=4.1"
-  RadioLib:
-    git: https://github.com/jgromes/RadioLib.git
+
   robusto-base:
     git: https://github.com/nicklasb/RobArch.git
     path: components/robusto-base
-  robusto-concurrency:
-    git: https://github.com/nicklasb/RobArch.git
-    path: components/robusto-concurrency
-  robusto-network:
-    git: https://github.com/nicklasb/RobArch.git
-    path: components/robusto-network
   NMEA2000:
     git: https://github.com/phatpaul/NMEA2000.git
   NMEA2000_esp32:

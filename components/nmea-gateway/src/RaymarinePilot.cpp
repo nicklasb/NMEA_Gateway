@@ -1,4 +1,4 @@
-#include "RaymarinePilot.h"
+#include "../include/RaymarinePilot.h"
 
 char* TAG = (char*)"NMEA2000-Raymarine-Pilot";
 

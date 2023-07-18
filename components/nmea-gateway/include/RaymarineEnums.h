@@ -1,6 +1,9 @@
+#pragma once
 
-#ifndef _RaymarineEnums_H_
-#define _RaymarineEnums_H_
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
   enum RaymarinePilotModes
   {
@@ -22,4 +25,6 @@
     KEY_TACK_STARBORD = KEY_PLUS_1_PLUS_10
   };
 
+#ifdef __cplusplus
+} /* extern "C" */
 #endif

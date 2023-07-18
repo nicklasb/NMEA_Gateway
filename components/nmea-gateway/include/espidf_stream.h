@@ -1,5 +1,6 @@
 #include <N2kStream.h>
 
+
 class EspIDFStream: public N2kStream {
     public:    
         int read();

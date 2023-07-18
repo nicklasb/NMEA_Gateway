@@ -1,4 +1,4 @@
-#include "NMEA2000Controller.h"
+#include "../include/NMEA2000Controller.h"
 
 #include "freertos/FreeRTOS.h"
 #include <freertos/task.h>

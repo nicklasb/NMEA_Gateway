@@ -8,6 +8,9 @@
  * @copyright Copyright (c) 2022
  * Original Library source build by Matzam, see: https://github.com/matztam/raymarine-evo-pilot-remote/
  */
+
+#pragma once
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -16,9 +19,6 @@ extern "C"
 #include "RaymarineEnums.h"
 
 
-
-#ifndef _RaymarineController_H_
-#define _RaymarineController_H_
 
 // Force ESP32 as the NMEA2000 CAN selector seems to fail without arduino
 #define USE_N2K_CAN 7
@@ -41,9 +41,6 @@ extern "C"
 
     void NMEA2000_loop();
     void look_for_pilot();
-
-
-#endif
 
 
 #ifdef __cplusplus
