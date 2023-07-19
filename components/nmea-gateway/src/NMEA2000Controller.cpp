@@ -11,9 +11,9 @@
 #include <N2kDeviceList.h>
 #include <N2kMessages.h>
 #include <ActisenseReader.h>
-#include "RaymarinePilot.h"
+#include "../RaymarinePilot.h"
 
-#include "espidf_stream.h"
+#include "../espidf_stream.h"
 EspIDFStream Serial;
 
 #define CAN_RX_PIN GPIO_NUM_34
