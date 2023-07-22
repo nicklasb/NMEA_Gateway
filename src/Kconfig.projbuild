@@ -5,6 +5,7 @@ menu "NMEA Gateway config"
         default 5
         help
             The GPIO of the NMEA2000/CAN transmitter
+    
     config CAN_RX_IDX
         int "GPIO of NMEA2000/CAN RX"
         default 6

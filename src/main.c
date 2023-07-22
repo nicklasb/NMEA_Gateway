@@ -5,7 +5,7 @@
 #include <robusto_peer.h>  
 #include <robusto_communication.h>
 #include <robusto_concurrency.h>
-#include <NMEA2000Controller.h>
+//#include <NMEA2000Controller.hpp>
 
 #include "handlers.h"
 
@@ -25,7 +25,7 @@ void app_main() {
     init_handlers(log_prefix);    
     // INIT NMEA
     ROB_LOGI(log_prefix, "Starting NMEA2000 interface...");
-    NMEA2000_Controller_setup();
+    //NMEA2000_Controller_setup();
     //robusto_peer_t *peer = add_peer_by_mac_address("Consumer", kconfig_mac_to_6_bytes(0x08b61fc0d660), ROBUSTO_MT_ESPNOW);
     //robusto_peer_t *peer = add_peer_by_i2c_address("Consumer", 1);
     
