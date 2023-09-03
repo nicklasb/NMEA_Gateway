@@ -9,8 +9,8 @@ dependencies:
   robusto-network:
     git: https://github.com/nicklasb/RobArch.git
     path: components/robusto-network
-  robusto-concurrency:
+  robusto-server:
     git: https://github.com/nicklasb/RobArch.git
-    path: components/robusto-concurrency
+    path: components/robusto-server
 
   

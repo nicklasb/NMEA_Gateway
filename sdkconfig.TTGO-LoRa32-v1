@@ -327,6 +327,8 @@ CONFIG_CAN_RX_IDX=6
 # CONFIG_ROBUSTO_SUPPORTS_UMTS is not set
 CONFIG_ROBUSTO_PEER_NAME_LENGTH=16
 CONFIG_ROBUSTO_PEER_NAME="UNNAMEDPEER"
+CONFIG_ROBUSTO_PEER_HEARTBEAT_SKIP_COUNT=50
+CONFIG_ROBUSTO_PEER_HEARTBEAT_PROBLEM_SKIP_COUNT=10
 CONFIG_ROB_RECEIPT_TIMEOUT_MS=100
 
 #
@@ -349,6 +351,19 @@ CONFIG_PMU_INTERRUPT_PIN=35
 # CONFIG_ROBUSTO_NETWORK_QOS_TESTING is not set
 # end of Testing & simulation
 # end of Networking
+
+#
+# Repeater
+#
+CONFIG_ROBUSTO_MAX_RECURRENCES=10
+CONFIG_ROBUSTO_REPEATER_DELAY_MS=100
+# end of Repeater
+
+#
+# Memory
+#
+# CONFIG_ROBUSTO_MONITOR_MEMORY is not set
+# end of Memory
 
 #
 # Base system configuration
@@ -1566,6 +1581,16 @@ CONFIG_WPA_MBEDTLS_TLS_CLIENT=y
 #
 # end of Testing & simulation
 # end of Networking
+
+#
+# Repeater
+#
+# end of Repeater
+
+#
+# Memory
+#
+# end of Memory
 # end of Component config
 
 # Deprecated options for backward compatibility
