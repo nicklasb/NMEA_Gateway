@@ -4,13 +4,13 @@ dependencies:
   idf: ">=4.1"
 
   robusto-base:
-    git: https://github.com/nicklasb/RobArch.git
+    git: https://github.com/RobustoFramework/pub_test.git
     path: components/robusto-base
   robusto-network:
-    git: https://github.com/nicklasb/RobArch.git
+    git: https://github.com/RobustoFramework/pub_test.git
     path: components/robusto-network
   robusto-server:
-    git: https://github.com/nicklasb/RobArch.git
+    git: https://github.com/RobustoFramework/pub_test.git
     path: components/robusto-server
 
   
