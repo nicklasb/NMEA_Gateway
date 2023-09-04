@@ -3,7 +3,7 @@
 #include <robusto_init.h>
 #include <robusto_network_init.h>
 #include <robusto_peer.h>  
-#include <robusto_communication.h>
+#include <robusto_network_init.h>
 #include <robusto_concurrency.h>
 //#include <NMEA2000Controller.hpp>
 
