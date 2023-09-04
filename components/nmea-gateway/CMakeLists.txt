@@ -1,6 +1,6 @@
 FILE(GLOB nmea_sources 
-"include/*.h"
-"src/*.c" 
+"include/*.hpp"
+"src/*.cpp" 
 )
 
 idf_component_register(

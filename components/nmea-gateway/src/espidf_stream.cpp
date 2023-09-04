@@ -17,7 +17,7 @@ int EspIDFStream::peek() {
 // Write data to stream.
 size_t EspIDFStream::write(const uint8_t *data, size_t size){
     if (size > STREAM_BUF_SIZE - currPos) {
-        ESP_LOGI("DEBUG", "%*s", currPos, buffer);
+        ROB_LOGI("DEBUG", "%*s", currPos, buffer);
         memcpy(buffer, data, size);
         currPos = size;
 

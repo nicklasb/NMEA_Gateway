@@ -11,6 +11,7 @@
 #include <N2kDeviceList.h>
 #include <N2kMessages.h>
 #include <ActisenseReader.h>
+#include <robusto_logging.h>
 #include "../include/RaymarinePilot.h"
 
 #include "../include/espidf_stream.h"
@@ -40,7 +41,7 @@ int getDeviceSourceAddress(std::string model)
   if (!pN2kDeviceList->ReadResetIsListUpdated())
     return -1;
 
-  ESP_LOGI(NMEA2000tag, "N2kMaxBusDevices: %i", N2kMaxBusDevices);
+  ROB_LOGI(NMEA2000tag, "N2kMaxBusDevices: %i", N2kMaxBusDevices);
 
   for (uint8_t i = 0; i < N2kMaxBusDevices; i++)
   {
@@ -71,7 +72,7 @@ int num_n2k_messages = 0;
 void HandleStreamN2kMsg(const tN2kMsg &message)
 {
 
-  // ESP_LOGI(NMEA2000tag,"%s", message.Data);
+  // ROB_LOGI(NMEA2000tag,"%s", message.Data);
   //  N2kMsg.Print(&Serial);
   // num_n2k_messages++;
   ToggleLed();
@@ -139,7 +140,7 @@ bool NMEA2000_Controller_setup()
   //  actisense_reader.SetMsgHandler(HandleStreamActisenseMsg);
 
   // beep(BEEP_STARTUP);
-  ESP_LOGI(NMEA2000tag, "NMEA2000 controller set up,");
+  ROB_LOGI(NMEA2000tag, "NMEA2000 controller set up,");
   return true;
 }
 
@@ -153,12 +154,12 @@ void look_for_pilot()
   {
     nmea2000->ParseMessages();
     RaymarinePilot::PilotSourceAddress = getDeviceSourceAddress("Raymarine EV-1 Course Computer");
-    vTaskDelay(50 / portTICK_RATE_MS);
+    r_delay(50);
   }
 
   if (RaymarinePilot::PilotSourceAddress >= 0)
   {
-    ESP_LOGI(NMEA2000tag, "Found EV-1 Pilot: %i", RaymarinePilot::PilotSourceAddress);
+    ROB_LOGI(NMEA2000tag, "Found EV-1 Pilot: %i", RaymarinePilot::PilotSourceAddress);
   }
   else
   {
