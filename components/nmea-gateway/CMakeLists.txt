@@ -1,5 +1,5 @@
 FILE(GLOB nmea_sources 
-"include/*.hpp"
+"include/*.h"
 "src/*.cpp" 
 )
 

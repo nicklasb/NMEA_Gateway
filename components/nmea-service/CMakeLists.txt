@@ -1,7 +1,8 @@
-FILE(GLOB nmea_sources 
+FILE(GLOB nmea_service 
 "include/*.h"
 "src/*.c" 
 )
+
 
 idf_component_register(
     SRCS ${nmea_sources} 
@@ -9,3 +10,4 @@ idf_component_register(
     INCLUDE_DIRS . include
     REQUIRES robusto NMEA2000 NMEA2000_esp32
 )
+

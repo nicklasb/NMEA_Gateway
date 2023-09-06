@@ -33,9 +33,17 @@
 #pragma once
 
 #include <robconfig.h>
-#include <robusto_message.h>
 
-void init_hello_service(char * _log_prefix);
-void init_hello_client(char * _log_prefix);
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
-void hello_client_call_server();
+void init_nmea_service(char * _log_prefix) __attribute__((used));
+void start_nmea_service(void) __attribute__((used));
+void shutdown_nmea_service(void) __attribute__((used));
+void register_nmea_service(void) __attribute__((constructor));
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif

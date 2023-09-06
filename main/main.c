@@ -1,10 +1,9 @@
 #include <robusto_logging.h>
-#include <robusto_time.h>
 #include <robusto_init.h>
+#include <robusto_server_init.h>
 #include <robusto_network_init.h>
-#include <robusto_peer.h>  
-#include <robusto_network_init.h>
-#include <robusto_concurrency.h>
+
+#include <nmea_service.h>
 #include <NMEA2000Controller.h>
 
 
@@ -15,8 +14,13 @@ char * log_prefix;
 
 
 void app_main() {
+    register_network_service();
+    register_server_service();
+    register_nmea_service();
+
     // INIT framework
     init_robusto();
+ 
     log_prefix = "NMEA_Gateway";
   
     // INIT NMEA

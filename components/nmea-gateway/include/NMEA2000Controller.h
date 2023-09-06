@@ -17,7 +17,7 @@ extern "C"
 #endif
 
 #include "RaymarineEnums.h"
-
+#include <stdbool.h>
 
 
 // Force ESP32 as the NMEA2000 CAN selector seems to fail without arduino
