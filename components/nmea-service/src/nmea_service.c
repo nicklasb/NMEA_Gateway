@@ -10,6 +10,8 @@
 
 const uint16_t serviceid = 1959;
 
+#define SPEED_THROUGH_WATER_PGN 128259L
+
 void on_incoming(robusto_message_t *message);
 void shutdown_nmea_network_service(void) ;
 
@@ -33,16 +35,16 @@ volatile network_service_t nmea_service = {
 
 void on_incoming(robusto_message_t *message) {
     
-    if (message->string_count == 1) {
-        if (strcmp(message->strings[0], "Hi there!") == 0) {
-            ROB_LOGW(nmea_log_prefix, "Got a message from the %s client through %s!", message->peer->name, media_type_to_str(message->media_type));
-            char * response = "Well nmea!!\x00";
-            send_message_strings(message->peer, 0,0, (uint8_t *)response, 13, NULL);
+    if (message->binary_data_length > 0) {
+        rob_log_bit_mesh(ROB_LOG_INFO, nmea_log_prefix, message->binary_data, message->binary_data_length);
+        if (*(uint32_t *)(message->binary_data) == SPEED_THROUGH_WATER_PGN) {
+            ROB_LOGI(nmea_log_prefix, "Got speed from %s: %u knots/100!", message->peer->name, *(uint16_t *)(message->binary_data + sizeof(uint32_t)));
+            
         } else {
-            ROB_LOGE(nmea_log_prefix, "A message, but not nmea: %s", message->strings[0]);
+            ROB_LOGE(nmea_log_prefix, "An unrecognized PGN: %lu", *(uint32_t *)(message->binary_data));
         }
     } else {
-        ROB_LOGE(nmea_log_prefix, "Got a message that didn't have one string!");
+        ROB_LOGE(nmea_log_prefix, "Got a message that didn't have any binary data!");
     }
     
 }
