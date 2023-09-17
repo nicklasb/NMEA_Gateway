@@ -2,6 +2,7 @@
 #include <robusto_init.h>
 #include <robusto_server_init.h>
 #include <robusto_network_init.h>
+#include <robusto_concurrency.h>
 
 #include <nmea_service.h>
 #include <NMEA2000Controller.h>
@@ -37,7 +38,9 @@ void app_main() {
     ROB_LOGI(log_prefix, "NMEA gateway initiated, awaiting requests.");
     ROB_LOGI(log_prefix, "------------------------------------------");
     while(1) {
-        r_delay(1000);
+        NMEA2000_loop();
+        //ESP_LOGI(TAG, "Server available memory: %i", heap_caps_get_free_size(MALLOC_CAP_8BIT));
+        robusto_yield();
     }
 
 

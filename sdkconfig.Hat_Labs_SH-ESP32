@@ -418,7 +418,7 @@ CONFIG_ROB_LOG_LEVEL_INFO=y
 # CONFIG_ROB_LOG_LEVEL_DEBUG is not set
 # CONFIG_ROB_LOG_LEVEL_VERBOSE is not set
 CONFIG_ROB_LOG_MAXIMUM_LEVEL=3
-CONFIG_ROB_BLINK_GPIO=-1
+CONFIG_ROB_BLINK_GPIO=2
 # end of Base system configuration
 # end of Robusto Configuration
 

@@ -6,6 +6,9 @@
 #include <robusto_network_service.h>
 #include <robusto_message.h>
 
+#include <NMEA2000Controller.h>
+
+
 #include <string.h>
 
 const uint16_t serviceid = 1959;
@@ -38,7 +41,9 @@ void on_incoming(robusto_message_t *message) {
     if (message->binary_data_length > 0) {
         rob_log_bit_mesh(ROB_LOG_INFO, nmea_log_prefix, message->binary_data, message->binary_data_length);
         if (*(uint32_t *)(message->binary_data) == SPEED_THROUGH_WATER_PGN) {
-            ROB_LOGI(nmea_log_prefix, "Got speed from %s: %u knots/100!", message->peer->name, *(uint16_t *)(message->binary_data + sizeof(uint32_t)));
+            double speed_through_water =  (double)(*(uint16_t *)(message->binary_data + sizeof(uint32_t)))/1000;
+            NMEA2000_Controller_send_speedThroughWater(speed_through_water);
+            ROB_LOGI(nmea_log_prefix, "Sent speed from %s: %f knots!", message->peer->name, speed_through_water);
             
         } else {
             ROB_LOGE(nmea_log_prefix, "An unrecognized PGN: %lu", *(uint32_t *)(message->binary_data));
@@ -65,6 +70,7 @@ void start_nmea_service(void)
     if (robusto_register_network_service(&nmea_service) != ROB_OK) {
         ROB_LOGE(nmea_log_prefix, "Failed adding service");
     }
+
 }
 
 void init_nmea_service(char * _log_prefix)
