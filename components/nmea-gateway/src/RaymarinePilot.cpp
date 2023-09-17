@@ -224,7 +224,7 @@ void RaymarinePilot::KeyCommand(tN2kMsg &N2kMsg,uint16_t command){
   N2kMsg.AddByte(0xc8);
 }
 
-void RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg) {
+bool RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg) {
   if(N2kMsg.PGN == 127250L){ //Heading
     unsigned char SID;
     tN2kHeadingReference ref;
@@ -307,7 +307,7 @@ void RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg) {
     pilotHeadingFilterCount = pilotHeadingFilterCount % 4;
     
     if(pilotHeadingFilterCount > 0){
-      return;
+      return false;
     }
     double LocalHeadingTrue;
     double LocalHeadingMagnetic;
@@ -331,7 +331,7 @@ void RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg) {
     pilotTargetHeadingFilterCount = pilotTargetHeadingFilterCount % 4;
     
     if(pilotTargetHeadingFilterCount > 0){
-      return;
+      return false;
     }
     double LocalHeadingTrue;
     double LocalHeadingMagnetic;
@@ -347,7 +347,11 @@ void RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg) {
         ESP_LOGI(TAG, "Target Heading true: %f", RaymarinePilot::TargetHeadingTrue);
       }
     }     
+  } else {
+    return false;
   }
+  return true;
+  
 }
 
 bool RaymarinePilot::ParseN2kPGN65288(const tN2kMsg &N2kMsg, unsigned char &AlarmStatus, unsigned char &AlarmCode, unsigned char &AlarmGroup) {

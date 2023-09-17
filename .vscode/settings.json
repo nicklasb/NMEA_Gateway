@@ -10,6 +10,7 @@
         "robusto_network_service.h": "c",
         "robusto_init.h": "c",
         "robusto_queue.h": "c",
-        "robusto_server_init.h": "c"
+        "robusto_server_init.h": "c",
+        "robusto_system.h": "c"
     }
 }

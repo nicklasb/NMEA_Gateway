@@ -28,7 +28,7 @@
     static void TurnToWaypoint(tN2kMsg &N2kMsg);
     static void KeyCommand(tN2kMsg &N2kMsg, uint16_t command);
 
-    static void HandleNMEA2000Msg(const tN2kMsg &N2kMsg);
+    static bool HandleNMEA2000Msg(const tN2kMsg &N2kMsg);
 
     static bool ParseN2kPGN65288(const tN2kMsg &N2kMsg, unsigned char &AlarmState, unsigned char &AlarmCode, unsigned char &AlarmGroup);
     static inline bool ParseN2kAlarm(const tN2kMsg &N2kMsg, unsigned char &AlarmState, unsigned char &AlarmCode, unsigned char &AlarmGroup)
