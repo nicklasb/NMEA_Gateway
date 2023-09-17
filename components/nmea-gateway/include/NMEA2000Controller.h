@@ -18,6 +18,7 @@ extern "C"
 
 #include "RaymarineEnums.h"
 #include <stdbool.h>
+#include <robconfig.h>
 
 
 // Force ESP32 as the NMEA2000 CAN selector seems to fail without arduino

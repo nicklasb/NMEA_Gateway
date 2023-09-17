@@ -75,7 +75,5 @@ void init_nmea_service(char * _log_prefix)
 void register_nmea_service(void) {
     char * tst = malloc(18);
     strcpy(tst, "NMEA 2000 service");
-    ROB_LOGW("sdf","ss %s", tst);
-    ROB_LOGW("sdf","112");
     register_service(init_nmea_service, start_nmea_service, shutdown_nmea_service, 4, tst);    
 }

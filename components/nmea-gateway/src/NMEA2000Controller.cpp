@@ -17,8 +17,6 @@
 #include "../include/espidf_stream.h"
 EspIDFStream Serial;
 
-#define CAN_RX_PIN GPIO_NUM_34
-#define CAN_TX_PIN GPIO_NUM_32
 
 int SID = 0;
 
@@ -72,7 +70,7 @@ int num_n2k_messages = 0;
 void HandleStreamN2kMsg(const tN2kMsg &message)
 {
 
-  // ROB_LOGI(NMEA2000tag,"%s", message.Data);
+  ROB_LOGI(NMEA2000tag,"%s", message.Data);
   //  N2kMsg.Print(&Serial);
   // num_n2k_messages++;
   ToggleLed();
@@ -90,7 +88,7 @@ void HandleStreamActisenseMsg(const tN2kMsg &message)
 bool NMEA2000_Controller_setup()
 {
   // instantiate the NMEA2000 object
-  nmea2000 = new tNMEA2000_esp32(CAN_TX_PIN, CAN_RX_PIN);
+  nmea2000 = new tNMEA2000_esp32((gpio_num_t)(CONFIG_CAN_TX_PIN), (gpio_num_t)(CONFIG_CAN_RX_PIN));
 
   // attachInterrupt(digitalPinToInterrupt(pinVT), handleRemoteInput, RISING);
 
