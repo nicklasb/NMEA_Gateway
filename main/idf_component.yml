@@ -12,5 +12,7 @@ dependencies:
   robusto-server:
     git: https://github.com/RobustoFramework/pub_test.git
     path: components/robusto-server
-
+  robusto-ui:
+    git: https://github.com/RobustoFramework/pub_test.git
+    path: components/robusto-ui
   

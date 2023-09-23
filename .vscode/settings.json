@@ -1,16 +1,3 @@
 {
-    "idf.adapterTargetName": "esp32",
-    "files.associations": {
-        "robusto_concurrency.h": "c",
-        "nmea2000controller.h": "c",
-        "robusto_network_init.h": "c",
-        "robconfig.h": "c",
-        "sdkconfig.h": "c",
-        "nmea_service.h": "c",
-        "robusto_network_service.h": "c",
-        "robusto_init.h": "c",
-        "robusto_queue.h": "c",
-        "robusto_server_init.h": "c",
-        "robusto_system.h": "c"
-    }
+    "idf.adapterTargetName": "esp32"
 }

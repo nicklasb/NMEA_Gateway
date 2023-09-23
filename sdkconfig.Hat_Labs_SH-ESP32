@@ -318,6 +318,20 @@ CONFIG_CAN_RX_PIN=34
 #
 
 #
+# Base system configuration
+#
+# CONFIG_ROB_SYNCHRONOUS_MODE is not set
+# CONFIG_ROB_LOG_LEVEL_NONE is not set
+# CONFIG_ROB_LOG_LEVEL_ERROR is not set
+# CONFIG_ROB_LOG_LEVEL_WARN is not set
+CONFIG_ROB_LOG_LEVEL_INFO=y
+# CONFIG_ROB_LOG_LEVEL_DEBUG is not set
+# CONFIG_ROB_LOG_LEVEL_VERBOSE is not set
+CONFIG_ROB_LOG_MAXIMUM_LEVEL=3
+CONFIG_ROB_BLINK_GPIO=2
+# end of Base system configuration
+
+#
 # Networking
 #
 # CONFIG_ROBUSTO_SUPPORTS_BLE is not set
@@ -408,18 +422,10 @@ CONFIG_ROBUSTO_REPEATER_DELAY_MS=100
 # end of Memory
 
 #
-# Base system configuration
+# UI
 #
-# CONFIG_ROB_SYNCHRONOUS_MODE is not set
-# CONFIG_ROB_LOG_LEVEL_NONE is not set
-# CONFIG_ROB_LOG_LEVEL_ERROR is not set
-# CONFIG_ROB_LOG_LEVEL_WARN is not set
-CONFIG_ROB_LOG_LEVEL_INFO=y
-# CONFIG_ROB_LOG_LEVEL_DEBUG is not set
-# CONFIG_ROB_LOG_LEVEL_VERBOSE is not set
-CONFIG_ROB_LOG_MAXIMUM_LEVEL=3
-CONFIG_ROB_BLINK_GPIO=2
-# end of Base system configuration
+# CONFIG_ROBUSTO_UI is not set
+# end of UI
 # end of Robusto Configuration
 
 #
@@ -1653,6 +1659,11 @@ CONFIG_WPA_MBEDTLS_TLS_CLIENT=y
 # Memory
 #
 # end of Memory
+
+#
+# UI
+#
+# end of UI
 # end of Component config
 
 # Deprecated options for backward compatibility
