@@ -35,6 +35,12 @@ const IRAM_ATTR unsigned long ReceiveMessages[] = {127250L, 65288L, 65379L, 1282
 
 tN2kDeviceList *pN2kDeviceList;
 
+int num_n2k_messages = 0;
+int num_sent_n2k_messages = 0;
+int total_num_n2k_messages = 0;
+int total_num_sent_n2k_messages = 0;
+
+
 int getDeviceSourceAddress(std::string model)
 {
     if (!pN2kDeviceList->ReadResetIsListUpdated())
@@ -64,7 +70,28 @@ void ToggleLed()
     gpio_set_level(GPIO_NUM_2, !gpio_get_level(GPIO_NUM_2));
 }
 
-int num_n2k_messages = 0;
+char * get_nmea_state_string() {
+    char *nmea_row = (char *)robusto_malloc(20);
+    total_num_sent_n2k_messages+= num_sent_n2k_messages;
+    total_num_n2k_messages+= num_n2k_messages + num_sent_n2k_messages;
+    
+    if (total_num_sent_n2k_messages > 9999) {
+        total_num_sent_n2k_messages = 9999;
+    }
+    if (total_num_n2k_messages > 99999) {
+        total_num_n2k_messages = 99999;
+    }
+    if (num_n2k_messages > 99) {
+        num_n2k_messages = 99;
+    }
+
+    sprintf(nmea_row, "N|A%-5dS%-4dD%-2d", total_num_n2k_messages, total_num_sent_n2k_messages, num_n2k_messages);
+    num_n2k_messages = 0;
+    num_sent_n2k_messages = 0;
+    return nmea_row;
+}
+
+
 void HandleStreamN2kMsg(const tN2kMsg &message)
 {
     // ROB_LOGI(NMEA2000tag,"%s", message.Data);
@@ -175,6 +202,7 @@ void NMEA2000_Controller_set_heading(int heading, int change)
     tN2kMsg N2kMsg;
     RaymarinePilot::SetEvoPilotCourse(N2kMsg, heading, change);
     nmea2000->SendMsg(N2kMsg);
+    num_sent_n2k_messages++;
 }
 
 void NMEA2000_Controller_set_mode(enum RaymarinePilotModes ap_mode)
@@ -182,6 +210,7 @@ void NMEA2000_Controller_set_mode(enum RaymarinePilotModes ap_mode)
     tN2kMsg N2kMsg;
     RaymarinePilot::SetEvoPilotMode(N2kMsg, (RaymarinePilotModes)ap_mode);
     nmea2000->SendMsg(N2kMsg);
+    num_sent_n2k_messages++;
 }
 
 void NMEA2000_Controller_send_speedThroughWater(double speedThroughWater)
@@ -192,6 +221,7 @@ void NMEA2000_Controller_send_speedThroughWater(double speedThroughWater)
 
     speed_through_water = speedThroughWater;
     nmea2000->SendMsg(N2kMsg);
+    num_sent_n2k_messages++;
 }
 /**
  * @brief Send rudder angle to the NMEA network

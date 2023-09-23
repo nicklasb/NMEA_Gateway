@@ -43,6 +43,7 @@ extern "C"
     void NMEA2000_loop();
     void look_for_pilot();
 
+    char * get_nmea_state_string();
 
 #ifdef __cplusplus
 } /* extern "C" */
