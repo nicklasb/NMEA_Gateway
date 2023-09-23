@@ -7,7 +7,8 @@
 #include <robusto_message.h>
 
 #include <NMEA2000Controller.h>
-
+#include <robusto_incoming.h> 
+#include <robusto_ui_minimal.h>
 
 #include <string.h>
 
@@ -90,5 +91,7 @@ void init_nmea_service(char * _log_prefix)
 void register_nmea_service(void) {
     char * tst = malloc(18);
     strcpy(tst, "NMEA 2000 service");
-    register_service(init_nmea_service, start_nmea_service, shutdown_nmea_service, 4, tst);    
+    register_service(init_nmea_service, start_nmea_service, shutdown_nmea_service, 4, tst);  
+    
+    robusto_ui_minimal_write("NMEA 2000 service", 2, 2);  
 }
