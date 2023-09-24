@@ -3,7 +3,9 @@
 #include <robusto_server_init.h>
 #include <robusto_network_init.h>
 #include <robusto_concurrency.h>
-#include <robusto_ui_init.h>
+#ifdef ROBUSTO_UI_MINIMAL
+#include <robusto_screen.h>
+#endif
 #include <nmea_service.h>
 #include <NMEA2000Controller.h>
 
@@ -31,7 +33,9 @@ void app_main() {
     NMEA2000_Controller_setup();
     //robusto_peer_t *peer = add_peer_by_mac_address("Consumer", kconfig_mac_to_6_bytes(0x08b61fc0d660), ROBUSTO_MT_ESPNOW);
     //robusto_peer_t *peer = add_peer_by_i2c_address("Consumer", 1);
-    robusto_init_ui(log_prefix);
+    #ifdef ROBUSTO_UI_MINIMAL
+    robusto_screen_init(log_prefix);
+    #endif
     //robusto_waitfor_byte(&peer->state, PEER_KNOWN_INSECURE, 4000);
     // TODO: Should I add a send_message_string with 0,0 as default or something? Or even with defines?
     //char *msg = "Hello";
