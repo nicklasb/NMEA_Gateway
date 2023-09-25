@@ -98,7 +98,7 @@ void on_incoming(robusto_message_t *message) {
             float curr_heading = (float)(*(float *)(message->binary_data + 4));
             int change =  (int)(*(int *)(message->binary_data + 8));
             NMEA2000_Controller_set_heading(curr_heading, change);
-            ROB_LOGI(nmea_log_prefix, "Sent heading change from %s: Heading - %f, Change %i  knots!", message->peer->name, curr_heading,change);
+            ROB_LOGI(nmea_log_prefix, "Sent heading change from %s: Heading - %f, Change %i degrees!", message->peer->name, curr_heading,change);
             count_in++;
         } else {
             ROB_LOGE(nmea_log_prefix, "An unrecognized PGN: %lu", *(uint32_t *)(message->binary_data));
