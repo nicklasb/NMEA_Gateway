@@ -8,7 +8,7 @@
 
 #include <NMEA2000Controller.h>
 #include <robusto_incoming.h> 
-#ifdef ROBUSTO_UI_MINIMAL
+#ifdef CONFIG_ROBUSTO_UI_MINIMAL
 #include <robusto_ui_minimal.h>
 #endif
 #include <robusto_repeater.h>
@@ -60,7 +60,7 @@ void write_server_stats() {
     if (fail_in > 999) {
         fail_in = 999;
     }
-#ifdef ROBUSTO_UI_MINIMAL
+#ifdef CONFIG_ROBUSTO_UI_MINIMAL
 
 
     sprintf(&service_row, "S|I%-3dO%-3dF%-3d", count_in, count_out, fail_in);
