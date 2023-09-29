@@ -6,6 +6,6 @@ FILE(GLOB nmea_service
 idf_component_register(
     SRCS ${nmea_service} 
     INCLUDE_DIRS . include
-    REQUIRES robusto-base robusto-network robusto-server robusto-ui nmea-gateway
+    REQUIRES robusto-base robusto-network robusto-server robusto-ui nmea-gateway robusto-misc
 )
 

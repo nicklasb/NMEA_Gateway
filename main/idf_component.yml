@@ -15,4 +15,7 @@ dependencies:
   robusto-ui:
     git: https://github.com/RobustoFramework/pub_test.git
     path: components/robusto-ui
-  
+  robusto-misc:
+    git: https://github.com/RobustoFramework/pub_test.git
+    path: components/robusto-misc
+
