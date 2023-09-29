@@ -2,6 +2,11 @@
     "idf.adapterTargetName": "esp32",
     "files.associations": {
         "robusto_incoming.h": "c",
-        "robusto_network_service.h": "c"
+        "robusto_network_service.h": "c",
+        "robusto_pubsub.h": "c",
+        "robusto_network_init.h": "c",
+        "robusto_misc_init.h": "c",
+        "robusto_init.h": "c",
+        "robusto_pubsub_server.h": "c"
     }
 }

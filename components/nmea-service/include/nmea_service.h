@@ -39,10 +39,10 @@ extern "C"
 {
 #endif
 
-void init_nmea_service(char * _log_prefix) __attribute__((used));
-void start_nmea_service(void) __attribute__((used));
-void shutdown_nmea_service(void) __attribute__((used));
-void register_nmea_service(void) __attribute__((constructor));
+void init_nmea_service(char * _log_prefix);
+void start_nmea_service(void);
+void shutdown_nmea_service(void) ;
+void register_nmea_service(void);
 
 #ifdef __cplusplus
 } /* extern "C" */
