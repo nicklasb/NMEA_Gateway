@@ -31,6 +31,8 @@ uint16_t count_in = 0;
 uint16_t count_out = 0;
 uint16_t fail_in = 0;
 
+//uint16_t knots_100 = 100;
+
 void nmea_monitor_cb();
 void nmea_monitor_shutdown_cb();
 
@@ -73,6 +75,21 @@ void write_server_stats()
 void nmea_monitor_cb()
 {
     write_server_stats();
+   
+/*   
+    pubsub_server_topic_t * topic = robusto_pubsub_server_find_or_create_topic("NMEA.speed");
+    if (topic) {
+
+        knots_100++;
+        uint32_t stw_pgn = SPEED_THROUGH_WATER_PGN;
+        uint8_t speed_len = sizeof(stw_pgn)+ sizeof(knots_100);
+        uint8_t * speed_data = robusto_malloc(speed_len);
+        memcpy(speed_data, &stw_pgn, sizeof(stw_pgn));
+        memcpy(speed_data, &knots_100, sizeof(knots_100));
+        robusto_pubsub_server_publish(topic->hash, speed_data, speed_len);
+    }
+
+*/
 }
 
 void nmea_monitor_shutdown_cb()
