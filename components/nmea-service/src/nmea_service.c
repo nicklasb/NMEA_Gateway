@@ -79,9 +79,9 @@ void nmea_monitor_shutdown_cb()
 {
 }
 
-void on_publication(uint8_t *data, uint16_t data_length)
+void on_speed_publication(uint8_t *data, uint16_t data_length)
 {
-    ROB_LOGI(nmea_log_prefix, "In on_publication");
+    ROB_LOGI(nmea_log_prefix, "In on_speed_publication");
     if (data_length > 0)
     {
         int32_t pgn = *(uint32_t *)(data);
@@ -93,7 +93,27 @@ void on_publication(uint8_t *data, uint16_t data_length)
             ROB_LOGI(nmea_log_prefix, "Sent speed from pubsub: %f knots!", speed_through_water);
             count_in++;
         }
-        else if (pgn == SET_EVO_PILOT_COURSE)
+        else
+        {
+            ROB_LOGE(nmea_log_prefix, "An unrecognized PGN: %lu", *(uint32_t *)(data));
+            fail_in++;
+        }
+    }
+    else
+    {
+        ROB_LOGE(nmea_log_prefix, "Got a pubsub message that didn't have any binary data!");
+        fail_in++;
+    }
+}
+
+void on_ap_publication(uint8_t *data, uint16_t data_length)
+{
+    ROB_LOGI(nmea_log_prefix, "In on_ap_publication");
+    if (data_length > 0)
+    {
+        int32_t pgn = *(uint32_t *)(data);
+        rob_log_bit_mesh(ROB_LOG_INFO, nmea_log_prefix, data, data_length);
+        if (pgn == SET_EVO_PILOT_COURSE)
         {
             float curr_heading = (float)(*(float *)(data + 4));
             int change = (int)(*(int *)(data + 8));
@@ -129,8 +149,8 @@ void shutdown_nmea_network_service(void)
 void start_nmea_service(void)
 {
 
-    robusto_pubsub_server_subscribe(NULL, &on_publication, "NMEA.speed");
-
+    robusto_pubsub_server_subscribe(NULL, &on_speed_publication, "NMEA.speed");
+    robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap");
     robusto_register_recurrence(&nmea_monitor);
 }
 
