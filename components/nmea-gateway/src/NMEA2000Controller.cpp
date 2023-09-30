@@ -13,6 +13,8 @@
 #include <ActisenseReader.h>
 #include <robusto_logging.h>
 #include <robusto_system.h>
+#include <robusto_time.h>
+
 
 #include "../include/RaymarinePilot.h"
 
@@ -22,7 +24,7 @@ EspIDFStream Serial;
 int SID = 0;
 
 tActisenseReader actisense_reader;
-tNMEA2000 *nmea2000;
+tNMEA2000_esp32 *nmea2000;
 
 double speed_through_water = 0;
 
@@ -177,8 +179,8 @@ void look_for_pilot()
 
     pN2kDeviceList = new tN2kDeviceList(&NMEA2000);
 
-    unsigned long t = millis();
-    while (RaymarinePilot::PilotSourceAddress < 0 && millis() - t < 5000)
+    unsigned long t = r_millis();
+    while (RaymarinePilot::PilotSourceAddress < 0 && r_millis() - t < 5000)
     {
         nmea2000->ParseMessages();
         RaymarinePilot::PilotSourceAddress = getDeviceSourceAddress("Raymarine EV-1 Course Computer");

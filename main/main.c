@@ -4,7 +4,7 @@
 #include <robusto_network_init.h>
 #include <robusto_misc_init.h>
 #include <robusto_concurrency.h>
-#ifdef ROBUSTO_UI_MINIMAL
+#ifdef CONFIG_ROBUSTO_UI_MINIMAL
 #include <robusto_screen.h>
 #endif
 #include <nmea_service.h>
@@ -21,14 +21,18 @@ void app_main()
     register_server_service();
     register_nmea_service();
     register_misc_service();
+    
     // INIT framework
     init_robusto();
 
     log_prefix = "NMEA_Gateway";
-
+    robusto_screen_init(log_prefix);
     // INIT NMEA
     ROB_LOGI(log_prefix, "Starting NMEA2000 interface...");
     NMEA2000_Controller_setup();
+    char * taskname;
+    asprintf(&taskname, "Looking for pilot");
+    robusto_create_task(&look_for_pilot, NULL, taskname , NULL, 0);
 // robusto_peer_t *peer = add_peer_by_mac_address("Consumer", kconfig_mac_to_6_bytes(0x08b61fc0d660), ROBUSTO_MT_ESPNOW);
 // robusto_peer_t *peer = add_peer_by_i2c_address("Consumer", 1);
 #ifdef ROBUSTO_UI_MINIMAL
