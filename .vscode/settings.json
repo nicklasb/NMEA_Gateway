@@ -7,6 +7,8 @@
         "robusto_network_init.h": "c",
         "robusto_misc_init.h": "c",
         "robusto_init.h": "c",
-        "robusto_pubsub_server.h": "c"
+        "robusto_pubsub_server.h": "c",
+        "robusto_screen_minimal.h": "c",
+        "robusto_screen.h": "c"
     }
 }

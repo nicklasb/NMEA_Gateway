@@ -10,7 +10,7 @@
 #include <NMEA2000Controller.h>
 #include <robusto_incoming.h>
 #ifdef CONFIG_ROBUSTO_UI_MINIMAL
-#include <robusto_ui_minimal.h>
+#include <robusto_screen_minimal.h>
 #endif
 #include <robusto_repeater.h>
 
@@ -64,9 +64,9 @@ void write_server_stats()
 #ifdef CONFIG_ROBUSTO_UI_MINIMAL
 
     sprintf(&service_row, "S|I%-3dO%-3dF%-3d", count_in, count_out, fail_in);
-    robusto_ui_minimal_write(service_row, 0, 3);
+    robusto_screen_minimal_write(service_row, 0, 3);
     char *nmea_string = get_nmea_state_string();
-    robusto_ui_minimal_write(nmea_string, 0, 0);
+    robusto_screen_minimal_write(nmea_string, 0, 0);
     robusto_free(nmea_string);
 
 #endif

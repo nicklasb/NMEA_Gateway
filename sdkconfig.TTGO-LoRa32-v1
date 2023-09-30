@@ -480,6 +480,13 @@ CONFIG_ROBUSTO_UI_MINIMAL_GPIO_RST=16
 CONFIG_ROBUSTO_UI_MINIMAL_I2C_PORT=1
 CONFIG_ROBUSTO_UI_MINIMAL_I2C_FREQ_HZ=400000
 # end of UI
+
+#
+# Publisher Subscriber
+#
+# CONFIG_ROBUSTO_PUBSUB_SERVER is not set
+# CONFIG_ROBUSTO_PUBSUB_CLIENT is not set
+# end of Publisher Subscriber
 # end of Robusto Configuration
 
 #
@@ -1809,6 +1816,11 @@ CONFIG_WIFI_PROV_STA_ALL_CHANNEL_SCAN=y
 # Memory
 #
 # end of Memory
+
+#
+# Publisher Subscriber
+#
+# end of Publisher Subscriber
 
 #
 # Networking
