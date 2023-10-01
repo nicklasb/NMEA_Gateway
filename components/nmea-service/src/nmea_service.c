@@ -20,6 +20,7 @@ const uint16_t serviceid = 1959;
 
 #define SPEED_THROUGH_WATER_PGN 128259L
 #define SET_EVO_PILOT_COURSE 126208L
+#define TARGET_HEADING_MAGNETIC 65360L
 
 void on_incoming(robusto_message_t *message);
 void shutdown_nmea_network_service(void);
@@ -30,8 +31,6 @@ char _service_name[26] = "NMEA 2000 network service";
 uint16_t count_in = 0;
 uint16_t count_out = 0;
 uint16_t fail_in = 0;
-
-//uint16_t knots_100 = 100;
 
 void nmea_monitor_cb();
 void nmea_monitor_shutdown_cb();
@@ -72,24 +71,30 @@ void write_server_stats()
 #endif
 }
 
+void forward_to_NMEA_hdg(float target_heading_magnetic)
+{
+    pubsub_server_topic_t *topic = robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
+    if (topic)
+    {
+        ROB_LOGI(nmea_log_prefix, "Forwarding AP to NMEA.hdg");
+        uint32_t thm_pgn = TARGET_HEADING_MAGNETIC;
+
+        uint8_t target_heading_magnetic_len = sizeof(thm_pgn) + sizeof(target_heading_magnetic);
+        uint8_t *target_heading_magnetic_data = robusto_malloc(target_heading_magnetic_len);
+        memcpy(target_heading_magnetic_data, &thm_pgn, sizeof(thm_pgn));
+        memcpy(target_heading_magnetic_data + sizeof(thm_pgn), &target_heading_magnetic, sizeof(target_heading_magnetic));
+        robusto_pubsub_server_publish(topic->hash, target_heading_magnetic_data, target_heading_magnetic_len);
+        robusto_free(target_heading_magnetic_data);
+    }
+}
+
 void nmea_monitor_cb()
 {
     write_server_stats();
-   
-/*   
-    pubsub_server_topic_t * topic = robusto_pubsub_server_find_or_create_topic("NMEA.speed");
-    if (topic) {
-
-        knots_100++;
-        uint32_t stw_pgn = SPEED_THROUGH_WATER_PGN;
-        uint8_t speed_len = sizeof(stw_pgn)+ sizeof(knots_100);
-        uint8_t * speed_data = robusto_malloc(speed_len);
-        memcpy(speed_data, &stw_pgn, sizeof(stw_pgn));
-        memcpy(speed_data, &knots_100, sizeof(knots_100));
-        robusto_pubsub_server_publish(topic->hash, speed_data, speed_len);
-    }
-
-*/
+#ifndef CONFIG_FORWARD_AP_TO_NMEA_HDG
+    // Target Heading magnetic
+    forward_to_NMEA_hdg((float)(get_target_heading_magnetic()));
+#endif
 }
 
 void nmea_monitor_shutdown_cb()
@@ -105,7 +110,7 @@ void on_speed_publication(uint8_t *data, uint16_t data_length)
         rob_log_bit_mesh(ROB_LOG_INFO, nmea_log_prefix, data, data_length);
         if (pgn == SPEED_THROUGH_WATER_PGN)
         {
-            double speed_through_water = (double)(*(uint16_t *)(data + sizeof(uint32_t))) / 100;
+            double speed_through_water = (double)(*(uint16_t *)(data + sizeof(uint32_t))) / 1000;
             NMEA2000_Controller_send_speedThroughWater(speed_through_water);
             ROB_LOGI(nmea_log_prefix, "Sent speed from pubsub: %f knots!", speed_through_water);
             count_in++;
@@ -136,6 +141,25 @@ void on_ap_publication(uint8_t *data, uint16_t data_length)
             int change = (int)(*(int *)(data + 8));
             NMEA2000_Controller_set_heading(curr_heading, change);
             ROB_LOGI(nmea_log_prefix, "Sent heading change from pubsub: Heading - %f, Change %i degrees!", curr_heading, change);
+#ifdef CONFIG_FORWARD_AP_TO_NMEA_HDG
+            float target_heading_magnetic;
+            if ((curr_heading + change) < 0)
+            {
+                target_heading_magnetic = curr_heading + change + 360;
+            }
+            else if ((curr_heading + change) > 359)
+            {
+                target_heading_magnetic = curr_heading + change - 360;
+            }
+            else
+            {
+                target_heading_magnetic = curr_heading + change;
+            }
+
+            forward_to_NMEA_hdg(target_heading_magnetic);
+
+#endif
+
             count_in++;
         }
         else
