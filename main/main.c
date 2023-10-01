@@ -26,7 +26,9 @@ void app_main()
     init_robusto();
 
     log_prefix = "NMEA_Gateway";
+    #ifdef CONFIG_ROBUSTO_UI_MINIMAL
     robusto_screen_init(log_prefix);
+    #endif
     // INIT NMEA
     ROB_LOGI(log_prefix, "Starting NMEA2000 interface...");
     NMEA2000_Controller_setup();

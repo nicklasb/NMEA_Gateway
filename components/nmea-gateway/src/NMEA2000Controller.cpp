@@ -77,17 +77,17 @@ char * get_nmea_state_string() {
     total_num_sent_n2k_messages+= num_sent_n2k_messages;
     total_num_n2k_messages+= num_n2k_messages + num_sent_n2k_messages;
     
-    if (total_num_sent_n2k_messages > 9999) {
-        total_num_sent_n2k_messages = 9999;
+    if (total_num_sent_n2k_messages > 999) {
+        total_num_sent_n2k_messages = 999;
     }
     if (total_num_n2k_messages > 99999) {
         total_num_n2k_messages = 99999;
     }
-    if (num_n2k_messages > 99) {
-        num_n2k_messages = 99;
+    if (num_n2k_messages > 999) {
+        num_n2k_messages = 999;
     }
 
-    sprintf(nmea_row, "N|A%-5dS%-4dD%-2d", total_num_n2k_messages, total_num_sent_n2k_messages, num_n2k_messages);
+    sprintf(nmea_row, "N|A%-5dS%-3dD%-3d", total_num_n2k_messages, total_num_sent_n2k_messages, num_n2k_messages);
     num_n2k_messages = 0;
     num_sent_n2k_messages = 0;
     return nmea_row;
