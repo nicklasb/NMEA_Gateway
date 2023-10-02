@@ -11,7 +11,7 @@ menu "NMEA Gateway config"
         default 34
         help
             The GPIO of the NMEA2000/CAN receiver
-    config FORWARD_AP_TO_NMEA_HDG
+    config SIMULATE_AP
         bool "Forward incoming AP commands to NMEA.hdg topic"
         help
             This is used during testing to simulate the response of the auto pilot.

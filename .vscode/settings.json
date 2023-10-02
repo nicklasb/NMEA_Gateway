@@ -9,6 +9,11 @@
         "robusto_init.h": "c",
         "robusto_pubsub_server.h": "c",
         "robusto_screen_minimal.h": "c",
-        "robusto_screen.h": "c"
+        "robusto_screen.h": "c",
+        "nmea2000controller.h": "c",
+        "*.tcc": "c",
+        "cmath": "c",
+        "math.h": "c",
+        "raymarineenums.h": "c"
     }
 }
