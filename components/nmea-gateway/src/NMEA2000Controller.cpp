@@ -199,7 +199,7 @@ void look_for_pilot()
     vTaskDelete(NULL);
 }
 
-void NMEA2000_Controller_set_heading(int heading, int change)
+void NMEA2000_Controller_set_heading(double heading, int change)
 {
     tN2kMsg N2kMsg;
     RaymarinePilot::SetEvoPilotCourse(N2kMsg, heading, change);
@@ -242,6 +242,10 @@ enum RaymarinePilotModes get_ap_mode()
 {
     return RaymarinePilot::PilotMode;
 }
+void set_heading_magnetic(double value)
+{
+    RaymarinePilot::HeadingMagnetic = value;
+}
 
 double get_heading_magnetic()
 {
@@ -256,6 +260,11 @@ double get_heading_true()
 double get_target_heading_magnetic()
 {
     return RaymarinePilot::TargetHeadingMagnetic;
+}
+
+void set_target_heading_magnetic(double value)
+{
+    RaymarinePilot::TargetHeadingMagnetic = value;
 }
 
 double get_target_heading_true()

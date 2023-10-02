@@ -16,11 +16,12 @@
 
 #include <string.h>
 
-const uint16_t serviceid = 1959;
+
 
 #define SPEED_THROUGH_WATER_PGN 128259L
 #define SET_EVO_PILOT_COURSE 126208L
 #define TARGET_HEADING_MAGNETIC 65360L
+#define HEADING_MAGNETIC 65359L
 
 void on_incoming(robusto_message_t *message);
 void shutdown_nmea_network_service(void);
@@ -31,6 +32,10 @@ char _service_name[26] = "NMEA 2000 network service";
 uint16_t count_in = 0;
 uint16_t count_out = 0;
 uint16_t fail_in = 0;
+
+#ifdef CONFIG_SIMULATE_AP
+float last_heading_magnetic = 0;
+#endif
 
 void nmea_monitor_cb();
 void nmea_monitor_shutdown_cb();
@@ -46,6 +51,8 @@ recurrence_t nmea_monitor = {
 
 void write_server_stats()
 {
+#ifdef CONFIG_ROBUSTO_UI_MINIMAL
+
     // This is bigger than the available area on screen, we manually maximize output
     char service_row[23] = {0};
     if (count_in > 999)
@@ -60,7 +67,6 @@ void write_server_stats()
     {
         fail_in = 999;
     }
-#ifdef CONFIG_ROBUSTO_UI_MINIMAL
 
     sprintf(&service_row, "S|I%-3dO%-3dF%-3d", count_in, count_out, fail_in);
     robusto_screen_minimal_write(service_row, 0, 3);
@@ -71,30 +77,29 @@ void write_server_stats()
 #endif
 }
 
-void forward_to_NMEA_hdg(float target_heading_magnetic)
+void forward_to_NMEA_hdg(float value, uint32_t pgn)
 {
     pubsub_server_topic_t *topic = robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
     if (topic)
     {
-        ROB_LOGI(nmea_log_prefix, "Forwarding AP to NMEA.hdg");
-        uint32_t thm_pgn = TARGET_HEADING_MAGNETIC;
+        ROB_LOGI(nmea_log_prefix, "Forwarding data to NMEA.hdg");
 
-        uint8_t target_heading_magnetic_len = sizeof(thm_pgn) + sizeof(target_heading_magnetic);
-        uint8_t *target_heading_magnetic_data = robusto_malloc(target_heading_magnetic_len);
-        memcpy(target_heading_magnetic_data, &thm_pgn, sizeof(thm_pgn));
-        memcpy(target_heading_magnetic_data + sizeof(thm_pgn), &target_heading_magnetic, sizeof(target_heading_magnetic));
-        robusto_pubsub_server_publish(topic->hash, target_heading_magnetic_data, target_heading_magnetic_len);
-        robusto_free(target_heading_magnetic_data);
+        uint8_t value_len = sizeof(pgn) + sizeof(value);
+        uint8_t *value_data = robusto_malloc(value_len);
+        memcpy(value_data, &pgn, sizeof(pgn));
+        memcpy(value_data + sizeof(pgn), &value, sizeof(value));
+        robusto_pubsub_server_publish(topic->hash, value_data, value_len);
+        robusto_free(value_data);
     }
 }
 
 void nmea_monitor_cb()
 {
     write_server_stats();
-#ifndef CONFIG_FORWARD_AP_TO_NMEA_HDG
+
     // Target Heading magnetic
-    forward_to_NMEA_hdg((float)(get_target_heading_magnetic()));
-#endif
+    forward_to_NMEA_hdg((float)get_target_heading_magnetic(), TARGET_HEADING_MAGNETIC);
+    forward_to_NMEA_hdg((float)get_heading_magnetic(), HEADING_MAGNETIC);
 }
 
 void nmea_monitor_shutdown_cb()
@@ -137,26 +142,28 @@ void on_ap_publication(uint8_t *data, uint16_t data_length)
         rob_log_bit_mesh(ROB_LOG_INFO, nmea_log_prefix, data, data_length);
         if (pgn == SET_EVO_PILOT_COURSE)
         {
-            float curr_heading = (float)(*(float *)(data + 4));
-            int change = (int)(*(int *)(data + 8));
+            double curr_heading = *(float *)(data + 4);
+            int change = *(int *)(data + 8);
             NMEA2000_Controller_set_heading(curr_heading, change);
             ROB_LOGI(nmea_log_prefix, "Sent heading change from pubsub: Heading - %f, Change %i degrees!", curr_heading, change);
-#ifdef CONFIG_FORWARD_AP_TO_NMEA_HDG
+#ifdef CONFIG_SIMULATE_AP
             float target_heading_magnetic;
             if ((curr_heading + change) < 0)
             {
-                target_heading_magnetic = curr_heading + change + 360;
+                target_heading_magnetic = (int)(curr_heading + change + 360 + 0.5);
             }
             else if ((curr_heading + change) > 359)
             {
-                target_heading_magnetic = curr_heading + change - 360;
+                target_heading_magnetic = (int)(curr_heading + change - 360 + 0.5);
             }
             else
             {
-                target_heading_magnetic = curr_heading + change;
+                target_heading_magnetic = (int)(curr_heading + change + 0.5);
             }
-
-            forward_to_NMEA_hdg(target_heading_magnetic);
+            set_target_heading_magnetic(target_heading_magnetic);
+            forward_to_NMEA_hdg(target_heading_magnetic, TARGET_HEADING_MAGNETIC);
+            set_heading_magnetic(last_heading_magnetic);
+            last_heading_magnetic = target_heading_magnetic;
 
 #endif
 

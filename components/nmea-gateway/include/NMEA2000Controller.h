@@ -26,7 +26,7 @@ extern "C"
 
     bool NMEA2000_Controller_setup();
 
-    void NMEA2000_Controller_set_heading(int heading, int change);
+    void NMEA2000_Controller_set_heading(double heading, int change);
 
     void NMEA2000_Controller_set_mode(enum RaymarinePilotModes ap_mode);
 
@@ -39,7 +39,8 @@ extern "C"
     double get_target_heading_magnetic();
     double get_target_heading_true();
     double get_speed_through_water();
-
+    void set_heading_magnetic(double value);
+    void set_target_heading_magnetic(double value);
     void NMEA2000_loop();
     void look_for_pilot();
 
