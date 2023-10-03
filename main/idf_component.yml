@@ -4,5 +4,6 @@ dependencies:
   idf: ">=4.1"
 
   robusto/robusto: "1.2.6"
-
+  NMEA2000:
+    git: https://github.com/nicklasb/NMEA2000.git
   
