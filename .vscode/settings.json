@@ -14,6 +14,7 @@
         "*.tcc": "c",
         "cmath": "c",
         "math.h": "c",
-        "raymarineenums.h": "c"
+        "raymarineenums.h": "c",
+        "chrono": "cpp"
     }
 }
