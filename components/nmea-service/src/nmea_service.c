@@ -34,7 +34,7 @@ uint16_t count_out = 0;
 uint16_t fail_in = 0;
 
 #ifdef CONFIG_SIMULATE_AP
-float last_heading_magnetic = 0;
+int32_t last_heading_magnetic = 0;
 #endif
 
 void nmea_monitor_cb();
@@ -77,7 +77,7 @@ void write_server_stats()
 #endif
 }
 
-void forward_to_NMEA_hdg(float value, uint32_t pgn)
+void forward_to_NMEA_hdg(int32_t value, uint32_t pgn)
 {
     pubsub_server_topic_t *topic = robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
     if (topic)
@@ -98,8 +98,9 @@ void nmea_monitor_cb()
     write_server_stats();
 
     // Target Heading magnetic
-    forward_to_NMEA_hdg((float)get_target_heading_magnetic(), TARGET_HEADING_MAGNETIC);
-    forward_to_NMEA_hdg((float)get_heading_magnetic(), HEADING_MAGNETIC);
+    // TODO: We are not rounding target up as we are gettings precision errors?
+    forward_to_NMEA_hdg((int32_t)(get_target_heading_magnetic() +0.5), TARGET_HEADING_MAGNETIC);
+    forward_to_NMEA_hdg((int32_t)(get_heading_magnetic() +0.5), HEADING_MAGNETIC);
 }
 
 void nmea_monitor_shutdown_cb()
@@ -138,31 +139,43 @@ void on_ap_publication(uint8_t *data, uint16_t data_length)
     ROB_LOGI(nmea_log_prefix, "In on_ap_publication");
     if (data_length > 0)
     {
-        int32_t pgn = *(uint32_t *)(data);
+        uint32_t pgn = *(uint32_t *)(data);
         rob_log_bit_mesh(ROB_LOG_INFO, nmea_log_prefix, data, data_length);
         if (pgn == SET_EVO_PILOT_COURSE)
         {
-            double curr_heading = *(float *)(data + 4);
-            int change = *(int *)(data + 8);
+            int32_t curr_heading =  *(int32_t *)(data + 4);
+            int32_t change = *(int32_t *)(data + 8);
+            // Filter  // TODO: This must be in relation to how long since last update.
+            if (curr_heading  > get_target_heading_magnetic()+ 30 || curr_heading < get_target_heading_magnetic() - 30) {
+                ROB_LOGE(nmea_log_prefix, "Target heading change larger than 30 degrees! Heading: %li, Change %li.", curr_heading, change);
+                return;
+            }
+            if (change  > 20 || change < - 20) {
+                ROB_LOGE(nmea_log_prefix, "Heading change larger than 20 degrees! Heading: %li, Change %li.", curr_heading, change);
+                return;
+            }
+
+
             NMEA2000_Controller_set_heading(curr_heading, change);
-            ROB_LOGI(nmea_log_prefix, "Sent heading change from pubsub: Heading - %f, Change %i degrees!", curr_heading, change);
+            ROB_LOGI(nmea_log_prefix, "Sent heading change from pubsub: Heading - %li, Change %li degrees!", curr_heading, change);
 #ifdef CONFIG_SIMULATE_AP
-            float target_heading_magnetic;
+            int32_t target_heading_magnetic;
             if ((curr_heading + change) < 0)
             {
-                target_heading_magnetic = (int)(curr_heading + change + 360 + 0.5);
+                target_heading_magnetic = curr_heading + change + 360;
             }
             else if ((curr_heading + change) > 359)
             {
-                target_heading_magnetic = (int)(curr_heading + change - 360 + 0.5);
+                target_heading_magnetic = curr_heading + change - 360;
             }
             else
             {
-                target_heading_magnetic = (int)(curr_heading + change + 0.5);
+                target_heading_magnetic = curr_heading + change;
             }
             set_target_heading_magnetic(target_heading_magnetic);
-            forward_to_NMEA_hdg(target_heading_magnetic, TARGET_HEADING_MAGNETIC);
-            set_heading_magnetic(last_heading_magnetic);
+            forward_to_NMEA_hdg((double)target_heading_magnetic, TARGET_HEADING_MAGNETIC);
+            set_heading_magnetic((double)last_heading_magnetic);
+            //forward_to_NMEA_hdg((double)last_heading_magnetic, HEADING_MAGNETIC);
             last_heading_magnetic = target_heading_magnetic;
 
 #endif
@@ -171,7 +184,7 @@ void on_ap_publication(uint8_t *data, uint16_t data_length)
         }
         else
         {
-            ROB_LOGE(nmea_log_prefix, "An unrecognized PGN: %lu", *(uint32_t *)(data));
+            ROB_LOGE(nmea_log_prefix, "An unrecognized PGN: %lu", pgn);
             fail_in++;
         }
     }
