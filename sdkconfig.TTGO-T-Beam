@@ -1605,51 +1605,6 @@ CONFIG_WPA_MBEDTLS_TLS_CLIENT=y
 # CONFIG_WPA_11R_SUPPORT is not set
 # CONFIG_WPA_WPS_SOFTAP_REGISTRAR is not set
 # end of Supplicant
-
-#
-# Publisher Subscriber
-#
-# end of Publisher Subscriber
-
-#
-# Networking
-#
-
-#
-# ESP-NOW-configuration
-#
-
-#
-# Testing
-#
-# end of Testing
-# end of ESP-NOW-configuration
-
-#
-# XPowersLib Configuration
-#
-# end of XPowersLib Configuration
-
-#
-# Testing & simulation
-#
-# end of Testing & simulation
-# end of Networking
-
-#
-# Repeater
-#
-# end of Repeater
-
-#
-# Memory
-#
-# end of Memory
-
-#
-# UI
-#
-# end of UI
 # end of Component config
 
 # Deprecated options for backward compatibility
