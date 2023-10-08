@@ -1657,41 +1657,6 @@ CONFIG_WIFI_PROV_AUTOSTOP_TIMEOUT=30
 CONFIG_WIFI_PROV_STA_ALL_CHANNEL_SCAN=y
 # CONFIG_WIFI_PROV_STA_FAST_SCAN is not set
 # end of Wi-Fi Provisioning Manager
-
-#
-# Publisher Subscriber
-#
-# end of Publisher Subscriber
-
-#
-# Networking
-#
-
-#
-# XPowersLib Configuration
-#
-# end of XPowersLib Configuration
-
-#
-# Testing & simulation
-#
-# end of Testing & simulation
-# end of Networking
-
-#
-# Repeater
-#
-# end of Repeater
-
-#
-# Memory
-#
-# end of Memory
-
-#
-# UI
-#
-# end of UI
 # end of Component config
 
 # CONFIG_IDF_EXPERIMENTAL_FEATURES is not set

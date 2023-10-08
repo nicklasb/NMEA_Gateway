@@ -3,8 +3,10 @@ dependencies:
   # Required IDF version
   idf: ">=4.1"
 
-  robusto-base:
-    git: https://github.com/RobustoFramework/pub_test.git
-    path: components/robusto-base
+  robusto:
+    git: https://github.com/RobustoFramework/Robusto.git
+    path: components/robusto
+  NMEA2000:
+    git: https://github.com/ttlappalainen/NMEA2000.git
   NMEA2000_esp32:
     git: https://github.com/phatpaul/NMEA2000_esp32.git
