@@ -23,7 +23,6 @@
 #define TARGET_HEADING_MAGNETIC 65360UL
 #define HEADING_MAGNETIC 65359UL
 
-void on_incoming(robusto_message_t *message);
 void shutdown_nmea_network_service(void);
 
 char *nmea_log_prefix;
@@ -43,7 +42,7 @@ void nmea_monitor_shutdown_cb();
 char nmea_monitor_name[15] = "NMEA monitor";
 recurrence_t nmea_monitor = {
     recurrence_name : &nmea_monitor_name,
-    skip_count : 10,
+    skip_count : 20,
     skips_left : 0,
     recurrence_callback : &nmea_monitor_cb,
     shutdown_callback : &nmea_monitor_shutdown_cb
@@ -82,7 +81,7 @@ void forward_to_NMEA_hdg(int32_t value, uint32_t pgn)
     pubsub_server_topic_t *topic = robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
     if (topic)
     {
-        ROB_LOGI(nmea_log_prefix, "Forwarding data to NMEA.hdg");
+        ROB_LOGD(nmea_log_prefix, "Forwarding data to NMEA.hdg");
 
         uint8_t value_len = sizeof(pgn) + sizeof(value);
         uint8_t *value_data = robusto_malloc(value_len);
@@ -90,6 +89,9 @@ void forward_to_NMEA_hdg(int32_t value, uint32_t pgn)
         memcpy(value_data + sizeof(pgn), &value, sizeof(value));
         robusto_pubsub_server_publish(topic->hash, value_data, value_len);
         robusto_free(value_data);
+    } else {
+        ROB_LOGE(nmea_log_prefix, "Could not find or create topic NMEA.hdg");
+
     }
 }
 
@@ -99,8 +101,11 @@ void nmea_monitor_cb()
 
     // Target Heading magnetic
     // TODO: We are not rounding target up as we are gettings precision errors?
+    #if CONFIG_SIMULATE_AP
+    // Initialize with some value
     forward_to_NMEA_hdg((int32_t)(get_target_heading_magnetic() +0.5), TARGET_HEADING_MAGNETIC);
     forward_to_NMEA_hdg((int32_t)(get_heading_magnetic() +0.5), HEADING_MAGNETIC);
+    #endif
 }
 
 void nmea_monitor_shutdown_cb()
@@ -136,7 +141,7 @@ void on_speed_publication(uint8_t *data, uint16_t data_length)
 
 void on_ap_publication(uint8_t *data, uint16_t data_length)
 {
-    ROB_LOGI(nmea_log_prefix, "In on_ap_publication");
+    ROB_LOGD(nmea_log_prefix, "In on_ap_publication");
     if (data_length > 0)
     {
         uint32_t pgn = *(uint32_t *)(data);
@@ -213,6 +218,9 @@ void start_nmea_service(void)
     robusto_pubsub_server_subscribe(NULL, &on_speed_publication, "NMEA.speed");
     robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap");
     robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
+
+    
+
     robusto_register_recurrence(&nmea_monitor);
 }
 
