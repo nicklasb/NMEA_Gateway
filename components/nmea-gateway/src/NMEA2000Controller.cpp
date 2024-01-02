@@ -201,6 +201,7 @@ void look_for_pilot()
 
 void NMEA2000_Controller_set_heading(double heading, int change)
 {
+    // TODO: Course or heading? Decide
     tN2kMsg N2kMsg;
     RaymarinePilot::SetEvoPilotCourse(N2kMsg, heading, change);
     nmea2000->SendMsg(N2kMsg);

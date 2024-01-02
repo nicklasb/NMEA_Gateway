@@ -375,6 +375,7 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 CONFIG_CAN_TX_PIN=32
 CONFIG_CAN_RX_PIN=34
+# CONFIG_SIMULATE_AP is not set
 # end of NMEA Gateway config
 
 #
@@ -384,7 +385,7 @@ CONFIG_CAN_RX_PIN=34
 #
 # Base system configuration
 #
-# CONFIG_ROB_SYNCHRONOUS_MODE is not set
+# CONFIG_ROBUSTO_SLEEP is not set
 # CONFIG_ROB_LOG_LEVEL_NONE is not set
 # CONFIG_ROB_LOG_LEVEL_ERROR is not set
 # CONFIG_ROB_LOG_LEVEL_WARN is not set
@@ -423,7 +424,6 @@ CONFIG_ROB_NETWORK_TEST_ESP_NOW_KILL_SWITCH=-1
 
 # CONFIG_ROBUSTO_SUPPORTS_LORA is not set
 # CONFIG_ROBUSTO_SUPPORTS_I2C is not set
-# CONFIG_ROBUSTO_SUPPORTS_UMTS is not set
 CONFIG_ROBUSTO_PEER_NAME_LENGTH=16
 CONFIG_ROBUSTO_PEER_NAME="NMEA_GATEWAY"
 CONFIG_ROBUSTO_PEER_HEARTBEAT_SKIP_COUNT=50
@@ -479,7 +479,21 @@ CONFIG_ROBUSTO_UI_MINIMAL_GPIO_SCL=15
 CONFIG_ROBUSTO_UI_MINIMAL_GPIO_RST=16
 CONFIG_ROBUSTO_UI_MINIMAL_I2C_PORT=1
 CONFIG_ROBUSTO_UI_MINIMAL_I2C_FREQ_HZ=400000
+# CONFIG_ROBUSTO_UI_MINIMAL_INTRO is not set
 # end of UI
+
+#
+# Conductor configuration
+#
+# CONFIG_ROBUSTO_CONDUCTOR_SERVER is not set
+# CONFIG_ROBUSTO_CONDUCTOR_CLIENT is not set
+# end of Conductor configuration
+
+#
+# Flash
+#
+# CONFIG_ROBUSTO_FLASH is not set
+# end of Flash
 
 #
 # Publisher Subscriber
@@ -487,6 +501,13 @@ CONFIG_ROBUSTO_UI_MINIMAL_I2C_FREQ_HZ=400000
 # CONFIG_ROBUSTO_PUBSUB_SERVER is not set
 # CONFIG_ROBUSTO_PUBSUB_CLIENT is not set
 # end of Publisher Subscriber
+
+#
+# UMTS gateway
+#
+# CONFIG_ROBUSTO_UMTS_SERVER is not set
+# CONFIG_ROBUSTO_UMTS_CLIENT is not set
+# end of UMTS gateway
 # end of Robusto Configuration
 
 #
@@ -1818,49 +1839,14 @@ CONFIG_WIFI_PROV_STA_ALL_CHANNEL_SCAN=y
 # end of Memory
 
 #
-# Publisher Subscriber
+# esp-modem
 #
-# end of Publisher Subscriber
-
-#
-# Networking
-#
-
-#
-# ESP-NOW-configuration
-#
-
-#
-# Testing
-#
-# end of Testing
-# end of ESP-NOW-configuration
-
-#
-# XPowersLib Configuration
-#
-# end of XPowersLib Configuration
-
-#
-# Testing & simulation
-#
-# end of Testing & simulation
-# end of Networking
-
-#
-# Repeater
-#
-# end of Repeater
-
-#
-# Memory
-#
-# end of Memory
-
-#
-# UI
-#
-# end of UI
+CONFIG_ESP_MODEM_CMUX_DEFRAGMENT_PAYLOAD=y
+# CONFIG_ESP_MODEM_USE_INFLATABLE_BUFFER_IF_NEEDED is not set
+CONFIG_ESP_MODEM_CMUX_DELAY_AFTER_DLCI_SETUP=0
+# CONFIG_ESP_MODEM_CMUX_USE_SHORT_PAYLOADS_ONLY is not set
+# CONFIG_ESP_MODEM_ADD_CUSTOM_MODULE is not set
+# end of esp-modem
 # end of Component config
 
 # CONFIG_IDF_EXPERIMENTAL_FEATURES is not set
