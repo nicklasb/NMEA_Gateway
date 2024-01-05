@@ -3,6 +3,7 @@
 
 #ifdef CONFIG_ROBUSTO_UI_MINIMAL
 #include <robusto_screen.h>
+#include <screen.h>
 #endif
 #include <nmea_service.h>
 #include <NMEA2000Controller.h>
@@ -31,6 +32,7 @@ void app_main()
 // robusto_peer_t *peer = add_peer_by_mac_address("Consumer", kconfig_mac_to_6_bytes(0x08b61fc0d660), ROBUSTO_MT_ESPNOW);
 // robusto_peer_t *peer = add_peer_by_i2c_address("Consumer", 1);
 #ifdef ROBUSTO_UI_MINIMAL
+    init_screen(log_prefix);
     robusto_screen_init(log_prefix);
 #endif
     // robusto_waitfor_byte(&peer->state, PEER_KNOWN_INSECURE, 4000);
