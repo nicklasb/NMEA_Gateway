@@ -68,9 +68,9 @@ void write_server_stats()
     }
 
     sprintf(&service_row, "S|I%-3dO%-3dF%-3d", count_in, count_out, fail_in);
-    robusto_screen_minimal_write(service_row, 0, 3);
+    robusto_screen_minimal_write(service_row, 0, 0);
     char *nmea_string = get_nmea_state_string();
-    robusto_screen_minimal_write(nmea_string, 0, 0);
+    robusto_screen_minimal_write(nmea_string, 0, 1);
     robusto_free(nmea_string);
 
 #endif
