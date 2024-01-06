@@ -7,4 +7,5 @@ managed_components
 build
 dependencies.lock
 components/NMEA2000
+components/robusto
 ~/esp
