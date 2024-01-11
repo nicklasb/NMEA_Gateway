@@ -87,7 +87,7 @@ char * get_nmea_state_string() {
         num_n2k_messages = 999;
     }
 
-    sprintf(nmea_row, "N|A%-5dS%-3dD%-3d", total_num_n2k_messages, total_num_sent_n2k_messages, num_n2k_messages);
+    sprintf(nmea_row, "N|A%-5d S%-3d D%-3d", total_num_n2k_messages, total_num_sent_n2k_messages, num_n2k_messages);
     num_n2k_messages = 0;
     num_sent_n2k_messages = 0;
     return nmea_row;
