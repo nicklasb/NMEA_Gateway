@@ -25,12 +25,15 @@
 
 void shutdown_nmea_network_service(void);
 
-char *nmea_log_prefix;
-char _service_name[26] = "NMEA 2000 network service";
+static char *nmea_log_prefix;
+static char _service_name[26] = "NMEA 2000 network service";
 
-uint16_t count_in = 0;
-uint16_t count_out = 0;
-uint16_t fail_in = 0;
+static ui_cb *cb_stats;
+static ui_cb *cb_nmea;
+
+static uint16_t count_in = 0;
+static uint16_t count_out = 0;
+static uint16_t fail_in = 0;
 
 #ifdef CONFIG_SIMULATE_AP
 int32_t last_heading_magnetic = 0;
@@ -50,7 +53,7 @@ recurrence_t nmea_monitor = {
 
 void write_server_stats()
 {
-#ifdef CONFIG_ROBUSTO_UI_MINIMAL
+#ifdef CONFIG_ROBUSTO_UI
 
     // This is bigger than the available area on screen, we manually maximize output
     char service_row[23] = {0};
@@ -68,9 +71,9 @@ void write_server_stats()
     }
 
     sprintf(&service_row, "S|I%-3dO%-3dF%-3d", count_in, count_out, fail_in);
-    robusto_screen_minimal_write(service_row, 0, 0);
+    cb_nmea(&service_row);
     char *nmea_string = get_nmea_state_string();
-    robusto_screen_minimal_write(nmea_string, 0, 1);
+    cb_stats(nmea_string);
     robusto_free(nmea_string);
 
 #endif
@@ -152,7 +155,8 @@ void on_ap_publication(uint8_t *data, uint16_t data_length)
             int32_t change = *(int32_t *)(data + 8);
             // Filter  // TODO: This must be in relation to how long since last update.
             if (curr_heading  > get_target_heading_magnetic()+ 30 || curr_heading < get_target_heading_magnetic() - 30) {
-                ROB_LOGE(nmea_log_prefix, "Target heading change larger than 30 degrees! Heading: %li, Change %li.", curr_heading, change);
+                ROB_LOGE(nmea_log_prefix, "Target heading change larger than 30 degrees! Heading: %li, Change %f. Mag %li", 
+                    curr_heading, get_target_heading_magnetic(), change);
                 return;
             }
             if (change  > 20 || change < - 20) {
@@ -218,13 +222,17 @@ void start_nmea_service(void)
     robusto_pubsub_server_subscribe(NULL, &on_speed_publication, "NMEA.speed");
     robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap");
     robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
-
-    
-
+  
     robusto_register_recurrence(&nmea_monitor);
 }
 
-void init_nmea_service(char *_log_prefix)
+void set_cb_nmea_service(ui_cb *_cb_stats, ui_cb *_cb_nmea)
+{
+    cb_stats = _cb_stats;
+    cb_nmea = _cb_nmea;
+}
+
+void init_nmea_service(char * _log_prefix)
 {
     nmea_log_prefix = _log_prefix;
 }

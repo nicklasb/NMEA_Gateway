@@ -1,9 +1,9 @@
 #include <robusto_logging.h>
 #include <robusto_init.h>
 
-#ifdef CONFIG_ROBUSTO_UI_MINIMAL
-#include <robusto_screen.h>
+#ifdef CONFIG_ROBUSTO_UI
 #include <screen.h>
+#include <nmea_screen.h>
 #endif
 #include <nmea_service.h>
 #include <NMEA2000Controller.h>
@@ -16,13 +16,18 @@ char *log_prefix;
 
 void app_main()
 {
-    register_nmea_service();
-    init_robusto();
-
     log_prefix = "NMEA_Gateway";
-    #ifdef CONFIG_ROBUSTO_UI_MINIMAL
-    robusto_screen_init(log_prefix);
+    set_cb_nmea_service(&set_server_stats, &set_nmea_stats);
+    register_nmea_service();
+    #ifdef CONFIG_ROBUSTO_UI
+    init_screen(log_prefix);
+    init_nmea_screen(log_prefix);
     #endif
+    #ifdef CONFIG_ROBUSTO_UI
+        start_nmea_screen();
+    #endif
+
+    init_robusto();    
     // INIT NMEA
     ROB_LOGI(log_prefix, "Starting NMEA2000 interface...");
     NMEA2000_Controller_setup();
@@ -31,10 +36,7 @@ void app_main()
     robusto_create_task(&look_for_pilot, NULL, taskname , NULL, 0);
 // robusto_peer_t *peer = add_peer_by_mac_address("Consumer", kconfig_mac_to_6_bytes(0x08b61fc0d660), ROBUSTO_MT_ESPNOW);
 // robusto_peer_t *peer = add_peer_by_i2c_address("Consumer", 1);
-#ifdef ROBUSTO_UI_MINIMAL
-    init_screen(log_prefix);
-    robusto_screen_init(log_prefix);
-#endif
+
     // robusto_waitfor_byte(&peer->state, PEER_KNOWN_INSECURE, 4000);
     //  TODO: Should I add a send_message_string with 0,0 as default or something? Or even with defines?
     // char *msg = "Hello";
