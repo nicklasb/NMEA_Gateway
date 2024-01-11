@@ -37,7 +37,7 @@ void start_nmea_screen()
         lv_obj_align(nmea_stats, LV_ALIGN_TOP_LEFT, 0, 0);
 
         server_stats = lv_label_create(screen);
-        label_set_text(nmea_stats, "S|");
+        label_set_text(server_stats, "S|");
         lv_obj_set_width(server_stats, 128);
         lv_obj_align(server_stats, LV_ALIGN_TOP_LEFT, 0, 16);
 

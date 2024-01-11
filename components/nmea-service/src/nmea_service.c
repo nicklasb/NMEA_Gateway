@@ -70,7 +70,7 @@ void write_server_stats()
         fail_in = 999;
     }
 
-    sprintf(&service_row, "S|I%-3dO%-3dF%-3d", count_in, count_out, fail_in);
+    sprintf(&service_row, "S|I%-3d O%-3d F%-3d", count_in, count_out, fail_in);
     cb_nmea(&service_row);
     char *nmea_string = get_nmea_state_string();
     cb_stats(nmea_string);
