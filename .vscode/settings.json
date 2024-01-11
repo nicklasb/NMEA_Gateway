@@ -1,5 +1,9 @@
 {
+    "idf.adapterTargetName": "esp32",
     "files.associations": {
-        "espnow.h": "c"
+        "robusto_logging.h": "c",
+        "nmea_screen.h": "c",
+        "nmea_service.h": "c",
+        "screen.h": "c"
     }
 }
