@@ -153,8 +153,15 @@ void on_ap_publication(uint8_t *data, uint16_t data_length)
         {
             int32_t curr_heading =  *(int32_t *)(data + 4);
             int32_t change = *(int32_t *)(data + 8);
+            int32_t adj_heading = curr_heading;
+            if (get_target_heading_magnetic() < 30) {
+                if (curr_heading > 330) {
+                    adj_heading = curr_heading - 360;
+                }
+            }
+
             // Filter  // TODO: This must be in relation to how long since last update.
-            if (curr_heading  > get_target_heading_magnetic()+ 30 || curr_heading < get_target_heading_magnetic() - 30) {
+            if (adj_heading  > get_target_heading_magnetic() + 30 || adj_heading < get_target_heading_magnetic() - 30) {
                 ROB_LOGE(nmea_log_prefix, "Target heading change larger than 30 degrees! Heading: %li, Change %f. Mag %li", 
                     curr_heading, get_target_heading_magnetic(), change);
                 return;

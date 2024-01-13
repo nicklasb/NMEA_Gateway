@@ -19,15 +19,16 @@ void app_main()
     log_prefix = "NMEA_Gateway";
     set_cb_nmea_service(&set_server_stats, &set_nmea_stats);
     register_nmea_service();
+
+    init_robusto();    
+
     #ifdef CONFIG_ROBUSTO_UI
     init_screen(log_prefix);
     init_nmea_screen(log_prefix);
-    #endif
-    #ifdef CONFIG_ROBUSTO_UI
-        start_nmea_screen();
+    start_nmea_screen();
     #endif
 
-    init_robusto();    
+
     // INIT NMEA
     ROB_LOGI(log_prefix, "Starting NMEA2000 interface...");
     NMEA2000_Controller_setup();
