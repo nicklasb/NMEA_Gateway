@@ -4,6 +4,8 @@
         "robusto_logging.h": "c",
         "nmea_screen.h": "c",
         "nmea_service.h": "c",
-        "screen.h": "c"
+        "screen.h": "c",
+        "robusto_concurrency.h": "c",
+        "lora_recover.h": "c"
     }
 }
