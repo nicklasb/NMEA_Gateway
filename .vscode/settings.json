@@ -6,6 +6,7 @@
         "nmea_service.h": "c",
         "screen.h": "c",
         "robusto_concurrency.h": "c",
-        "lora_recover.h": "c"
+        "lora_recover.h": "c",
+        "robusto_input.h": "c"
     }
 }

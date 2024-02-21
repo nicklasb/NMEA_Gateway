@@ -26,23 +26,28 @@ void robusto_screen_minimal_write_small(char *txt, uint8_t col, uint8_t row)
 }
 
 void label_set_text(lv_obj_t * label, const char * txt) {
+    #ifdef CONFIG_ROBUSTO_UI
     if (label) {
-        if (robusto_screen_lvgl_port_lock(2000)) {
+        if (robusto_screen_lvgl_port_lock(500)) {
         lv_label_set_text(label, txt);
         robusto_screen_lvgl_port_unlock();
         } else {
             ROB_LOGE(screen_log_prefix, "Failed to get a lock on the LVGL port in 2000 ms");
         }
     }
+    #endif
     
 }
 
 
 void init_screen(char *_log_prefix)
 {
+
     screen_log_prefix = _log_prefix;
+    #ifdef CONFIG_ROBUSTO_UI
     robusto_screen_init(screen_log_prefix);
     
     display = robusto_screen_lvgl_get_active_display();
     screen = lv_disp_get_scr_act(display);
+    #endif
 }
