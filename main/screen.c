@@ -1,4 +1,5 @@
 #include "screen.h"
+#ifdef CONFIG_ROBUSTO_UI
 #include <robusto_screen.h>
 #include <lvgl.h>
 #include <robusto_logging.h>
@@ -51,3 +52,4 @@ void init_screen(char *_log_prefix)
     screen = lv_disp_get_scr_act(display);
     #endif
 }
+#endif

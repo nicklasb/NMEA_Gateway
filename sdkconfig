@@ -433,7 +433,7 @@ CONFIG_ROBUSTO_REPEATER_DELAY_MS=100
 #
 # Publisher Subscriber
 #
-# CONFIG_ROBUSTO_PUBSUB_SERVER is not set
+CONFIG_ROBUSTO_PUBSUB_SERVER=y
 # CONFIG_ROBUSTO_PUBSUB_CLIENT is not set
 # end of Publisher Subscriber
 
@@ -443,6 +443,12 @@ CONFIG_ROBUSTO_REPEATER_DELAY_MS=100
 # CONFIG_ROBUSTO_UMTS_SERVER is not set
 # CONFIG_ROBUSTO_UMTS_CLIENT is not set
 # end of UMTS gateway
+
+#
+# Input
+#
+# CONFIG_ROBUSTO_INPUT is not set
+# end of Input
 # end of Robusto Configuration
 
 #

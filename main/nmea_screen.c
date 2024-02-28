@@ -1,5 +1,6 @@
 
 #include "nmea_screen.h"
+#ifdef CONFIG_ROBUSTO_UI
 #include "screen.h"
 #include "lvgl.h"
 #include <robusto_logging.h>
@@ -54,3 +55,4 @@ void init_nmea_screen(char *_log_prefix)
         lv_style_set_text_font(&large_font, LV_STATE_DEFAULT, &arial70px);
         */
 }
+#endif

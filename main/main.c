@@ -16,6 +16,9 @@ char *log_prefix;
 
 void app_main()
 {
+    #ifndef CONFIG_ROBUSTO_PUBSUB_SERVER
+    #error "The pubsub server library must be enabled."
+    #endif
     log_prefix = "NMEA_Gateway";
     #ifdef CONFIG_ROBUSTO_UI
     set_cb_nmea_service(&set_server_stats, &set_nmea_stats);
