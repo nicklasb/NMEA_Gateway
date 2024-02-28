@@ -2,9 +2,5 @@ version: "0.1.0"
 dependencies:
   # Required IDF version
   idf: ">=4.1"
-
-  robusto:
-    git: https://github.com/RobustoFramework/Robusto.git
-    path: components/robusto
-
+  robusto/robusto: ">=0.1.0-alpha"
 
