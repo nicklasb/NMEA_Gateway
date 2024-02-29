@@ -1,12 +1,3 @@
 {
-    "idf.adapterTargetName": "esp32",
-    "files.associations": {
-        "nmea_service.h": "c",
-        "robusto_network_service.h": "c",
-        "robusto_pubsub_server.h": "c",
-        "robconfig.h": "c",
-        "robusto_logging.h": "c",
-        "screen.h": "c",
-        "nmea_screen.h": "c"
-    }
+    "idf.adapterTargetName": "esp32"
 }
