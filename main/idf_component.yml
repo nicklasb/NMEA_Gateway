@@ -2,5 +2,5 @@ version: "0.1.0"
 dependencies:
   # Required IDF version
   idf: ">=4.1"
-  robusto/robusto: ">=0.1.0-alpha"
+  robusto/robusto: ">=1.1.0"
 
