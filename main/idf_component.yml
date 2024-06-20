@@ -3,14 +3,6 @@ dependencies:
   # Required IDF version
   idf: ">=4.1"
 
-  robusto-base:
-    git: https://github.com/nicklasb/RobArch.git
-    path: components/robusto-base
-  robusto-network:
-    git: https://github.com/nicklasb/RobArch.git
-    path: components/robusto-network
-  robusto-server:
-    git: https://github.com/nicklasb/RobArch.git
-    path: components/robusto-server
+  robusto/robusto: "1.2.6"
 
   
