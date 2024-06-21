@@ -18,7 +18,7 @@ void app_main()
     #endif
     log_prefix = "NMEA_Gateway";
     #ifdef CONFIG_ROBUSTO_UI
-    set_cb_nmea_service(&set_server_stats, &set_nmea_stats);
+    set_cb_nmea_service((ui_cb *)&set_server_stats, (ui_cb *)&set_nmea_stats);
     #endif
   //  register_nmea_service();
 

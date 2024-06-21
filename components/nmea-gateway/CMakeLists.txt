@@ -1,4 +1,4 @@
-FILE(GLOB nmea_sources 
+FILE(GLOB_RECURSE nmea_sources 
 "include/*.h"
 "src/*.cpp" 
 )
@@ -8,3 +8,4 @@ idf_component_register(
     INCLUDE_DIRS . include
     REQUIRES robusto NMEA2000_esp32
 )
+

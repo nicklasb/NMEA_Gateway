@@ -1,4 +1,4 @@
-#include "nmea_service.h"
+#include "../include/nmea_service.h"
 
 #include <robusto_init.h>
 #include <robusto_logging.h>

@@ -44,7 +44,7 @@ typedef void (ui_cb)(char * txt);
 void init_nmea_service(char * _log_prefix);
 void set_cb_nmea_service(ui_cb *_cb_stats, ui_cb *_cb_nmea);
 void start_nmea_service(void);
-void shutdown_nmea_service(void) ;
+void shutdown_nmea_service(void);
 void register_nmea_service(void);
 
 #ifdef __cplusplus
