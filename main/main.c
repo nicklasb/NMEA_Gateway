@@ -20,7 +20,7 @@ void app_main()
     #ifdef CONFIG_ROBUSTO_UI
     set_cb_nmea_service((ui_cb *)&set_server_stats, (ui_cb *)&set_nmea_stats);
     #endif
-  //  register_nmea_service();
+    register_nmea_service();
 
     init_robusto();    
 
@@ -35,7 +35,7 @@ void app_main()
     ROB_LOGI(log_prefix, "Starting NMEA2000 interface...");
     //NMEA2000_Controller_setup();
     char * taskname;
-    asprintf(&taskname, "Looking for pilot");
+    asprintf(&taskname, "Looking for pilot task");
   //  robusto_create_task(&look_for_pilot, NULL, taskname , NULL, 0);
 // robusto_peer_t *peer = add_peer_by_mac_address("Consumer", kconfig_mac_to_6_bytes(0x08b61fc0d660), ROBUSTO_MT_ESPNOW);
 // robusto_peer_t *peer = add_peer_by_i2c_address("Consumer", 1);
