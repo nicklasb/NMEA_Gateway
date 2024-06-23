@@ -12,7 +12,7 @@ menu "NMEA Gateway config"
         help
             The GPIO of the NMEA2000/CAN receiver
     config SIMULATE_AP
-        bool "Forward incoming AP commands to NMEA.hdg topic"
+        bool "Simulate an active NMEA network with a pilot (in NMEA.hdg topic)"
         help
             This is used during testing to simulate the response of the auto pilot.
 endmenu

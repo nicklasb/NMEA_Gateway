@@ -227,7 +227,7 @@ void start_nmea_service(void)
 {
 
     robusto_pubsub_server_subscribe(NULL, &on_speed_publication, "NMEA.speed");
-//    robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap");
+    robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap");
     robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
   
     robusto_register_recurrence(&nmea_monitor);
