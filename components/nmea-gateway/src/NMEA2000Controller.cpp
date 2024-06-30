@@ -96,7 +96,7 @@ char * get_nmea_state_string() {
 
 void HandleStreamN2kMsg(const tN2kMsg &message)
 {
-    // ROB_LOGI(NMEA2000tag,"%s", message.Data);
+     ROB_LOGI(NMEA2000tag,"%s", message.Data);
 
     ToggleLed();
     if (!RaymarinePilot::HandleNMEA2000Msg(message))
@@ -161,7 +161,7 @@ bool NMEA2000_Controller_setup()
     nmea2000->SetMsgHandler(HandleStreamN2kMsg);
 
 #ifdef DEBUG
-//  nmea2000->EnableForward(true);
+  nmea2000->EnableForward(true);
 #endif
 
     nmea2000->Open();

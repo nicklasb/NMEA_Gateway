@@ -3,8 +3,8 @@ dependencies:
   # Required IDF version
   idf: ">=4.1"
 
-  robusto/robusto: "1.2.6"
-  NMEA2000:
-    git: https://github.com/ttlappalainen/NMEA2000.git
+  robusto/robusto: "1.2.11"
+  #NMEA2000:
+  #  git: https://github.com/ttlappalainen/NMEA2000.git
 
   
