@@ -1,33 +1,34 @@
+
 #include "../include/NMEA2000Controller.h"
 
-#include "freertos/FreeRTOS.h"
-#include <freertos/task.h>
-#include <esp_log.h>
+
 
 #include <String>
 
-#include <NMEA2000_esp32.h>
-#include <NMEA2000_CAN.h>
+#define ESP32_CAN_TX_PIN GPIO_NUM_32
+#define ESP32_CAN_RX_PIN GPIO_NUM_34
+
+#include <NMEA2000_esp32xx.h>
 #include <N2kDeviceList.h>
 #include <N2kMessages.h>
-#include <ActisenseReader.h>
+
 #include <robusto_logging.h>
 #include <robusto_system.h>
 #include <robusto_time.h>
-
-
-#include "../include/RaymarinePilot.h"
+#include <robusto_concurrency.h>
 
 #include "../include/espidf_stream.h"
-EspIDFStream Serial;
+#include "../include/RaymarinePilot.h"
+
 
 int SID = 0;
+EspIDFStream Serial;
 
-tActisenseReader actisense_reader;
-tNMEA2000_esp32 *nmea2000;
-
+tNMEA2000_esp32xx *nmea2000;
+int32_t time_since_last_can_rx = 0;
 double speed_through_water = 0;
 
+#define RECOVERY_RETRY_MS 1000  // How long to attempt CAN bus recovery
 // Init logging
 
 char *NMEA2000tag = (char *)"NMEA2000";
@@ -41,6 +42,8 @@ int num_n2k_messages = 0;
 int num_sent_n2k_messages = 0;
 int total_num_n2k_messages = 0;
 int total_num_sent_n2k_messages = 0;
+
+char can_state;
 
 
 int getDeviceSourceAddress(std::string model)
@@ -87,7 +90,7 @@ char * get_nmea_state_string() {
         num_n2k_messages = 999;
     }
 
-    sprintf(nmea_row, "N|A%-5d S%-3d D%-3d", total_num_n2k_messages, total_num_sent_n2k_messages, num_n2k_messages);
+    sprintf(nmea_row, "N|A%-5d S%-3d R%-3d", total_num_n2k_messages, total_num_sent_n2k_messages, num_n2k_messages);
     num_n2k_messages = 0;
     num_sent_n2k_messages = 0;
     return nmea_row;
@@ -96,33 +99,69 @@ char * get_nmea_state_string() {
 
 void HandleStreamN2kMsg(const tN2kMsg &message)
 {
-     ROB_LOGI(NMEA2000tag,"%s", message.Data);
+    //ROB_LOGI(NMEA2000tag,"%s", message.Data);
 
     ToggleLed();
     if (!RaymarinePilot::HandleNMEA2000Msg(message))
     {
         if (CONFIG_ROB_LOG_MAXIMUM_LEVEL > ROB_LOG_WARN)
         {
-            //message.Print(&Serial);
+            ROB_LOGW(NMEA2000tag,"Unhandled message: %s", message.Data);
         }
     };
     num_n2k_messages++;
 }
+#if 0
+void RecoverFromCANBusOff() {
+  // This recovery routine first discussed in
+  // https://www.esp32.com/viewtopic.php?t=5010 and also implemented in
+  // https://github.com/wellenvogel/esp32-nmea2000
 
-int num_actisense_messages = 0;
-void HandleStreamActisenseMsg(const tN2kMsg &message)
-{
-    // N2kMsg.Print(&Serial);
-    num_actisense_messages++;
-    ToggleLed();
-    nmea2000->SendMsg(message);
+  ROB_LOGE(NMEA2000tag,"Recovering CAN bus");
+  static bool recovery_in_progress = false;
+  static uint32_t recovery_timer = r_millis();
+  if (recovery_in_progress && (r_millis() < recovery_timer + RECOVERY_RETRY_MS)     ) {
+    return;
+  }
+  recovery_in_progress = true;
+  recovery_timer = 0;
+  // Abort transmission
+  MODULE_CAN->CMR.B.AT = 1;
+  // read SR after write to CMR to settle register changes
+  (void)MODULE_CAN->SR.U;
+
+  // Reset error counters
+  MODULE_CAN->TXERR.U = 127;
+  MODULE_CAN->RXERR.U = 0;
+  // Release Reset mode
+  MODULE_CAN->MOD.B.RM = 0;
 }
+
+void PollCANStatus() {
+  // CAN controller registers are SJA1000 compatible.
+  // Bus status value 0 indicates bus-on; value 1 indicates bus-off.
+  unsigned int bus_status = MODULE_CAN->SR.B.BS;
+
+  switch (bus_status) {
+    case 0:
+      can_state = 'R';
+      break;
+    case 1:
+      can_state = 'O';
+      ROB_LOGW("NMEA2000 controller", "Recover can bus");
+      // try to automatically recover
+      RecoverFromCANBusOff();
+      break;
+  }
+}
+
+#endif
+
 bool NMEA2000_Controller_setup()
 {
-    // instantiate the NMEA2000 object
-    nmea2000 = new tNMEA2000_esp32((gpio_num_t)(CONFIG_CAN_TX_PIN), (gpio_num_t)(CONFIG_CAN_RX_PIN));
 
-    // attachInterrupt(digitalPinToInterrupt(pinVT), handleRemoteInput, RISING);
+    // instantiate the NMEA2000 object
+    nmea2000 = new tNMEA2000_esp32xx(GPIO_NUM_32, GPIO_NUM_34);
 
     // Reserve enough buffer for sending all messages. This does not work on small memory devices like Uno or Mega
     nmea2000->SetN2kCANSendFrameBufSize(250);
@@ -152,10 +191,9 @@ bool NMEA2000_Controller_setup()
     //  nmea2000->SetForwardType(tNMEA2000::fwdt_Text); // Show in clear text. Leave uncommented for default Actisense format.
     //nmea2000->SetForwardOwnMessages(false);
 #endif
-
     // If you also want to see all traffic on the bus use N2km_ListenAndNode instead of N2km_NodeOnly below
     nmea2000->SetMode(tNMEA2000::N2km_ListenAndNode); // N2km_NodeOnly N2km_ListenAndNode
-    nmea2000->SetForwardOwnMessages(true);            // do not echo own messages.
+    nmea2000->SetForwardOwnMessages(false);            // do not echo own messages.
     nmea2000->ExtendTransmitMessages(TransmitMessages);
     nmea2000->ExtendReceiveMessages(ReceiveMessages);
     nmea2000->SetMsgHandler(HandleStreamN2kMsg);
@@ -164,27 +202,28 @@ bool NMEA2000_Controller_setup()
   nmea2000->EnableForward(true);
 #endif
 
+
     nmea2000->Open();
 
     //  actisense_reader.SetDefaultSource(75);
     //  actisense_reader.SetMsgHandler(HandleStreamActisenseMsg);
     robusto_gpio_set_direction(2, true);
     // beep(BEEP_STARTUP);
-    ROB_LOGI(NMEA2000tag, "NMEA2000 controller set up,");
+    ROB_LOGI(NMEA2000tag, "NMEA2000 controller set up.");
     return true;
 }
 
 void look_for_pilot()
 {
 
-    pN2kDeviceList = new tN2kDeviceList(&NMEA2000);
+    pN2kDeviceList = new tN2kDeviceList(nmea2000);
 
     unsigned long t = r_millis();
     while (RaymarinePilot::PilotSourceAddress < 0 && r_millis() - t < 5000)
     {
         nmea2000->ParseMessages();
         RaymarinePilot::PilotSourceAddress = getDeviceSourceAddress("Raymarine EV-1 Course Computer");
-        r_delay(50);
+        r_delay(200);
     }
 
     if (RaymarinePilot::PilotSourceAddress >= 0)
@@ -194,7 +233,7 @@ void look_for_pilot()
     else
     {
         RaymarinePilot::PilotSourceAddress = 204;
-        ESP_LOGW(NMEA2000tag, "EV-1 Pilot not found. Defaulting to %i", RaymarinePilot::PilotSourceAddress);
+        ROB_LOGW(NMEA2000tag, "EV-1 Pilot not found. Defaulting to %i", RaymarinePilot::PilotSourceAddress);
     }
     vTaskDelete(NULL);
 }
@@ -282,8 +321,10 @@ void NMEA2000_loop()
 {
     if (nmea2000)
     {
+        //PollCANStatus();
+        robusto_yield();
         nmea2000->ParseMessages();
+        //robusto_yield();
     }
 
-    //  actisense_reader.ParseMessages();
 }

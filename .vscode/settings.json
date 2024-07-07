@@ -1,0 +1,9 @@
+{
+    "idf.adapterTargetName": "esp32",
+    "files.associations": {
+        "nmea2000controller.h": "c",
+        "nmea_service.h": "c",
+        "nmea_screen.h": "c",
+        "string": "cpp"
+    }
+}

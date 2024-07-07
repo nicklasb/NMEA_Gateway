@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <NMEA2000_esp32.h>
+#include <NMEA2000_esp32xx.h>
 
 #include "RaymarineEnums.h"
 

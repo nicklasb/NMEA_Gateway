@@ -1,3 +1,6 @@
+#define CAN_RX_IDX CONFIG_CAN_RX_PIN
+#define CAN_TX_IDX CONFIG_CAN_TX_PIN
+
 #include <robusto_logging.h>
 #include <robusto_init.h>
 
@@ -30,8 +33,7 @@ void app_main()
     init_nmea_screen(log_prefix);
     start_nmea_screen();
     #endif
-
-
+    r_delay(3000);
     // INIT NMEA
     ROB_LOGI(log_prefix, "Starting NMEA2000 interface...");
     NMEA2000_Controller_setup();
@@ -45,6 +47,6 @@ void app_main()
     while (1)
     {
         NMEA2000_loop();
-        robusto_yield();
     }
+
 }
