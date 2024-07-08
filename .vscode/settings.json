@@ -4,6 +4,8 @@
         "nmea2000controller.h": "c",
         "nmea_service.h": "c",
         "nmea_screen.h": "c",
-        "string": "cpp"
+        "string": "cpp",
+        "compare": "c",
+        "cstdint": "c"
     }
 }

@@ -104,10 +104,10 @@ void HandleStreamN2kMsg(const tN2kMsg &message)
     ToggleLed();
     if (!RaymarinePilot::HandleNMEA2000Msg(message))
     {
-        if (CONFIG_ROB_LOG_MAXIMUM_LEVEL > ROB_LOG_WARN)
+        /*if (CONFIG_ROB_LOG_MAXIMUM_LEVEL > ROB_LOG_WARN)
         {
             ROB_LOGW(NMEA2000tag,"Unhandled message: %s", message.Data);
-        }
+        }*/
     };
     num_n2k_messages++;
 }
@@ -218,12 +218,13 @@ void look_for_pilot()
 
     pN2kDeviceList = new tN2kDeviceList(nmea2000);
 
+
     unsigned long t = r_millis();
-    while (RaymarinePilot::PilotSourceAddress < 0 && r_millis() - t < 5000)
+    while (RaymarinePilot::PilotSourceAddress < 0 && r_millis() - t < 10000)
     {
         nmea2000->ParseMessages();
         RaymarinePilot::PilotSourceAddress = getDeviceSourceAddress("Raymarine EV-1 Course Computer");
-        r_delay(200);
+        r_delay(50);
     }
 
     if (RaymarinePilot::PilotSourceAddress >= 0)
@@ -234,6 +235,7 @@ void look_for_pilot()
     {
         RaymarinePilot::PilotSourceAddress = 204;
         ROB_LOGW(NMEA2000tag, "EV-1 Pilot not found. Defaulting to %i", RaymarinePilot::PilotSourceAddress);
+
     }
     vTaskDelete(NULL);
 }
@@ -321,10 +323,9 @@ void NMEA2000_loop()
 {
     if (nmea2000)
     {
-        //PollCANStatus();
         robusto_yield();
         nmea2000->ParseMessages();
-        //robusto_yield();
+        
     }
 
 }

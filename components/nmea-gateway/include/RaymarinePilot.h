@@ -7,6 +7,8 @@
 
 #include "RaymarineEnums.h"
 
+  typedef void (message_callback_cb)(int32_t value, uint32_t pgn);
+
   class RaymarinePilot
   {
   public:
@@ -16,6 +18,8 @@
 
     static RaymarinePilotModes PilotMode;
     static int PilotSourceAddress;
+    static void SetMessageCallback(message_callback_cb * callback);
+
 
     static void SetEvoPilotMode(tN2kMsg &N2kMsg, RaymarinePilotModes mode);
     static void SetEvoPilotWind(tN2kMsg &N2kMsg, double targetWindDirection);

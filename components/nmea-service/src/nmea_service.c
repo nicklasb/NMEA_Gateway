@@ -98,6 +98,18 @@ void forward_to_NMEA_hdg(int32_t value, uint32_t pgn)
     }
 }
 
+
+
+static void MessageCallback(int32_t value, uint32_t pgn) {
+    if (pgn == TARGET_HEADING_MAGNETIC) {
+        forward_to_NMEA_hdg(value, TARGET_HEADING_MAGNETIC);
+    } else
+    if (pgn == HEADING_MAGNETIC) {
+        forward_to_NMEA_hdg(value, HEADING_MAGNETIC);
+    }
+
+}
+
 void nmea_monitor_cb()
 {
     write_server_stats();
@@ -117,7 +129,7 @@ void nmea_monitor_shutdown_cb()
 
 void on_speed_publication(uint8_t *data, uint16_t data_length)
 {
-    ROB_LOGI(nmea_log_prefix, "In on_speed_publication");
+    ROB_LOGD(nmea_log_prefix, "In on_speed_publication");
     if (data_length > 0)
     {
         int32_t pgn = *(uint32_t *)(data);
