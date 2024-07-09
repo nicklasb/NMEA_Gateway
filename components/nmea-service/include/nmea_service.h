@@ -47,6 +47,8 @@ void start_nmea_service(void);
 void shutdown_nmea_service(void);
 void register_nmea_service(void);
 
+
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

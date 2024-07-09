@@ -15,14 +15,16 @@
 #include <robusto_repeater.h>
 
 #include <string.h>
-
-
-
-#define SPEED_THROUGH_WATER_PGN 128259UL
+// Raymarine specific
+// AP commands
 #define SET_EVO_PILOT_COURSE 126208UL
-#define TARGET_HEADING_MAGNETIC 65360UL
+// AP output
+#define TARGET_HEADING_TRUE 65360UL
+#define TARGET_HEADING_MAGNETIC 653601UL // Own differentiator
 #define HEADING_MAGNETIC 65359UL
 
+#define SPEED_THROUGH_WATER_PGN 128259UL
+#define SPEED_COURSE_OVER_GROUND 129026UL
 void shutdown_nmea_network_service(void);
 
 static char *nmea_log_prefix;
@@ -84,7 +86,7 @@ void forward_to_NMEA_hdg(int32_t value, uint32_t pgn)
     pubsub_server_topic_t *topic = robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
     if (topic)
     {
-        ROB_LOGD(nmea_log_prefix, "Forwarding data to NMEA.hdg");
+        ROB_LOGI(nmea_log_prefix, "Forwarding data to NMEA.hdg");
 
         uint8_t value_len = sizeof(pgn) + sizeof(value);
         uint8_t *value_data = robusto_malloc(value_len);
@@ -92,35 +94,29 @@ void forward_to_NMEA_hdg(int32_t value, uint32_t pgn)
         memcpy(value_data + sizeof(pgn), &value, sizeof(value));
         robusto_pubsub_server_publish(topic->hash, value_data, value_len);
         robusto_free(value_data);
-    } else {
+    }
+    else
+    {
         ROB_LOGE(nmea_log_prefix, "Could not find or create topic NMEA.hdg");
-
     }
 }
 
-
-
-static void MessageCallback(int32_t value, uint32_t pgn) {
-    if (pgn == TARGET_HEADING_MAGNETIC) {
-        forward_to_NMEA_hdg(value, TARGET_HEADING_MAGNETIC);
-    } else
-    if (pgn == HEADING_MAGNETIC) {
-        forward_to_NMEA_hdg(value, HEADING_MAGNETIC);
-    }
-
+void nmea_message_callback(int32_t value, uint32_t pgn)
+{
+    forward_to_NMEA_hdg(value, pgn);
 }
 
 void nmea_monitor_cb()
 {
     write_server_stats();
 
-    // Target Heading magnetic
-    // TODO: We are not rounding target up as we are gettings precision errors?
-    #if CONFIG_SIMULATE_AP
+// Target Heading magnetic
+// TODO: We are not rounding target up as we are gettings precision errors?
+#if CONFIG_SIMULATE_AP
     // Initialize with some value
-    forward_to_NMEA_hdg((int32_t)(get_target_heading_magnetic() +0.5), TARGET_HEADING_MAGNETIC);
-    forward_to_NMEA_hdg((int32_t)(get_heading_magnetic() +0.5), HEADING_MAGNETIC);
-    #endif
+    forward_to_NMEA_hdg((int32_t)(get_target_heading_magnetic() + 0.5), TARGET_HEADING_MAGNETIC);
+    forward_to_NMEA_hdg((int32_t)(get_heading_magnetic() + 0.5), HEADING_MAGNETIC);
+#endif
 }
 
 void nmea_monitor_shutdown_cb()
@@ -163,26 +159,29 @@ void on_ap_publication(uint8_t *data, uint16_t data_length)
         rob_log_bit_mesh(ROB_LOG_INFO, nmea_log_prefix, data, data_length);
         if (pgn == SET_EVO_PILOT_COURSE)
         {
-            int32_t curr_heading =  *(int32_t *)(data + 4);
+            int32_t curr_heading = *(int32_t *)(data + 4);
             int32_t change = *(int32_t *)(data + 8);
             int32_t adj_heading = curr_heading;
-            if (get_target_heading_magnetic() < 30) {
-                if (curr_heading > 330) {
+            if (get_target_heading_magnetic() < 30)
+            {
+                if (curr_heading > 330)
+                {
                     adj_heading = curr_heading - 360;
                 }
             }
 
             // Filter  // TODO: This must be in relation to how long since last update.
-            if (adj_heading  > get_target_heading_magnetic() + 30 || adj_heading < get_target_heading_magnetic() - 30) {
-                ROB_LOGE(nmea_log_prefix, "Target heading change larger than 30 degrees! Heading: %li, Change %f. Mag %li", 
-                    curr_heading, get_target_heading_magnetic(), change);
+            if (adj_heading > get_target_heading_magnetic() + 30 || adj_heading < get_target_heading_magnetic() - 30)
+            {
+                ROB_LOGE(nmea_log_prefix, "Target heading change larger than 30 degrees! Heading: %li, Change %f. Mag %li",
+                         curr_heading, get_target_heading_magnetic(), change);
                 return;
             }
-            if (change  > 20 || change < - 20) {
+            if (change > 20 || change < -20)
+            {
                 ROB_LOGE(nmea_log_prefix, "Heading change larger than 20 degrees! Heading: %li, Change %li.", curr_heading, change);
                 return;
             }
-
 
             NMEA2000_Controller_set_heading(curr_heading, change);
             ROB_LOGI(nmea_log_prefix, "Sent heading change from pubsub: Heading - %li, Change %li degrees!", curr_heading, change);
@@ -203,7 +202,7 @@ void on_ap_publication(uint8_t *data, uint16_t data_length)
             set_target_heading_magnetic(target_heading_magnetic);
             forward_to_NMEA_hdg((double)target_heading_magnetic, TARGET_HEADING_MAGNETIC);
             set_heading_magnetic((double)last_heading_magnetic);
-            //forward_to_NMEA_hdg((double)last_heading_magnetic, HEADING_MAGNETIC);
+            // forward_to_NMEA_hdg((double)last_heading_magnetic, HEADING_MAGNETIC);
             last_heading_magnetic = target_heading_magnetic;
 
 #endif
@@ -237,11 +236,11 @@ void shutdown_nmea_network_service(void)
 
 void start_nmea_service(void)
 {
-
+    set_callback(nmea_message_callback);    
     robusto_pubsub_server_subscribe(NULL, &on_speed_publication, "NMEA.speed");
     robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap");
     robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
-  
+
     robusto_register_recurrence(&nmea_monitor);
 }
 
@@ -251,7 +250,7 @@ void set_cb_nmea_service(ui_cb *_cb_stats, ui_cb *_cb_nmea)
     cb_nmea = _cb_nmea;
 }
 
-void init_nmea_service(char * _log_prefix)
+void init_nmea_service(char *_log_prefix)
 {
     nmea_log_prefix = _log_prefix;
 }

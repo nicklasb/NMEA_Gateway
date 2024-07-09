@@ -6,6 +6,13 @@ char *TAG = (char *)"NMEA2000-Raymarine-Pilot";
 
 #include "N2kMessages.h"
 
+// TODO: These defines are multiplied, please move into library.
+#define SPEED_THROUGH_WATER_PGN 128259UL
+#define SPEED_COURSE_OVER_GROUND 129026UL
+#define TARGET_HEADING_TRUE 65360UL
+#define TARGET_HEADING_MAGNETIC 653601UL // Own differentiator
+#define HEADING_MAGNETIC 65359UL
+
 double RaymarinePilot::HeadingTrue = 0;
 double RaymarinePilot::HeadingMagnetic = 0;
 double RaymarinePilot::TargetHeadingTrue = 0;
@@ -18,15 +25,15 @@ unsigned int pilotHeadingFilterCount = 0;
 unsigned int pilotTargetHeadingFilterCount = 0;
 
 bool RaymarinePilot::alarmWaypoint = false;
-message_callback_cb * message_callback = NULL;
+message_callback_cb * RaymarinePilot::message_callback = NULL;
 
-static void SetMessageCallback(message_callback_cb * callback_cb) {
-  message_callback = callback_cb;
+void RaymarinePilot::SetMessageCallback(message_callback_cb * callback_cb) {
+  RaymarinePilot::message_callback = callback_cb;
 }
 
-void CallMessageCallback(int32_t value, uint32_t pgn) {
-  if (message_callback) {
-    message_callback(value, pgn);
+void RaymarinePilot::CallMessageCallback(int32_t value, uint32_t pgn) {
+  if (RaymarinePilot::message_callback) {
+    RaymarinePilot::message_callback(value, pgn);
   }
 }
 // PilotSourceAddress muss aus der tN2kDeviceList ausgelesen werden. Beispiel dazu: DeviceAnalyzer.ino
@@ -353,12 +360,12 @@ bool RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg)
       RaymarinePilot::HeadingMagnetic = RadToDeg(LocalHeadingMagnetic);
 
       ESP_LOGI(TAG, "Heading magnetic: %f", RaymarinePilot::HeadingMagnetic);
-      CallMessageCallback(RaymarinePilot::HeadingMagnetic, 65359L);
+      RaymarinePilot::CallMessageCallback(RaymarinePilot::HeadingMagnetic, 65359L);
 
       if (HeadingTrue != N2kDoubleNA)
       {
         ESP_LOGI(TAG, "Heading true: %f", RaymarinePilot::HeadingTrue);
-        CallMessageCallback(RaymarinePilot::HeadingTrue, 65360L);
+        RaymarinePilot::CallMessageCallback(RaymarinePilot::HeadingTrue, 65360L);
       }
     }
   }
@@ -382,10 +389,12 @@ bool RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg)
       RaymarinePilot::TargetHeadingMagnetic = RadToDeg(LocalHeadingMagnetic);
 
       ESP_LOGI(TAG, "Target Heading magnetic: %f", RaymarinePilot::TargetHeadingMagnetic);
+      RaymarinePilot::CallMessageCallback(RaymarinePilot::TargetHeadingMagnetic, TARGET_HEADING_MAGNETIC);
 
       if (HeadingTrue != N2kDoubleNA)
       {
         ESP_LOGI(TAG, "Target Heading true: %f", RaymarinePilot::TargetHeadingTrue);
+        RaymarinePilot::CallMessageCallback(RaymarinePilot::TargetHeadingTrue, TARGET_HEADING_TRUE);
       }
     }
   }

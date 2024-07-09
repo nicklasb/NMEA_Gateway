@@ -41,10 +41,11 @@ extern "C"
     double get_speed_through_water();
     void set_heading_magnetic(double value);
     void set_target_heading_magnetic(double value);
+    void set_callback(void *cb);
     void NMEA2000_loop();
     void look_for_pilot();
 
-    char * get_nmea_state_string();
+    char *get_nmea_state_string();
 
 #ifdef __cplusplus
 } /* extern "C" */

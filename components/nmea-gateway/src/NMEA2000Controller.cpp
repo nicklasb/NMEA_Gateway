@@ -1,8 +1,6 @@
 
 #include "../include/NMEA2000Controller.h"
 
-
-
 #include <String>
 
 #define ESP32_CAN_TX_PIN GPIO_NUM_32
@@ -18,7 +16,7 @@
 #include <robusto_concurrency.h>
 
 #include "../include/espidf_stream.h"
-#include "../include/RaymarinePilot.h"
+#include "RaymarinePilot.h"
 
 
 int SID = 0;
@@ -28,7 +26,7 @@ tNMEA2000_esp32xx *nmea2000;
 int32_t time_since_last_can_rx = 0;
 double speed_through_water = 0;
 
-#define RECOVERY_RETRY_MS 1000  // How long to attempt CAN bus recovery
+#define RECOVERY_RETRY_MS 1000 // How long to attempt CAN bus recovery
 // Init logging
 
 char *NMEA2000tag = (char *)"NMEA2000";
@@ -44,7 +42,6 @@ int total_num_n2k_messages = 0;
 int total_num_sent_n2k_messages = 0;
 
 char can_state;
-
 
 int getDeviceSourceAddress(std::string model)
 {
@@ -75,18 +72,22 @@ void ToggleLed()
     gpio_set_level(GPIO_NUM_2, !gpio_get_level(GPIO_NUM_2));
 }
 
-char * get_nmea_state_string() {
+char *get_nmea_state_string()
+{
     char *nmea_row = (char *)robusto_malloc(20);
-    total_num_sent_n2k_messages+= num_sent_n2k_messages;
-    total_num_n2k_messages+= num_n2k_messages + num_sent_n2k_messages;
-    
-    if (total_num_sent_n2k_messages > 999) {
+    total_num_sent_n2k_messages += num_sent_n2k_messages;
+    total_num_n2k_messages += num_n2k_messages + num_sent_n2k_messages;
+
+    if (total_num_sent_n2k_messages > 999)
+    {
         total_num_sent_n2k_messages = 999;
     }
-    if (total_num_n2k_messages > 99999) {
+    if (total_num_n2k_messages > 99999)
+    {
         total_num_n2k_messages = 99999;
     }
-    if (num_n2k_messages > 999) {
+    if (num_n2k_messages > 999)
+    {
         num_n2k_messages = 999;
     }
 
@@ -96,10 +97,9 @@ char * get_nmea_state_string() {
     return nmea_row;
 }
 
-
 void HandleStreamN2kMsg(const tN2kMsg &message)
 {
-    //ROB_LOGI(NMEA2000tag,"%s", message.Data);
+    // ROB_LOGI(NMEA2000tag,"%s", message.Data);
 
     ToggleLed();
     if (!RaymarinePilot::HandleNMEA2000Msg(message))
@@ -189,19 +189,18 @@ bool NMEA2000_Controller_setup()
 #ifdef DEBUG
     //  nmea2000->SetForwardStream(&Serial);            // PC output on due programming port
     //  nmea2000->SetForwardType(tNMEA2000::fwdt_Text); // Show in clear text. Leave uncommented for default Actisense format.
-    //nmea2000->SetForwardOwnMessages(false);
+    // nmea2000->SetForwardOwnMessages(false);
 #endif
     // If you also want to see all traffic on the bus use N2km_ListenAndNode instead of N2km_NodeOnly below
     nmea2000->SetMode(tNMEA2000::N2km_ListenAndNode); // N2km_NodeOnly N2km_ListenAndNode
-    nmea2000->SetForwardOwnMessages(false);            // do not echo own messages.
+    nmea2000->SetForwardOwnMessages(false);           // do not echo own messages.
     nmea2000->ExtendTransmitMessages(TransmitMessages);
     nmea2000->ExtendReceiveMessages(ReceiveMessages);
     nmea2000->SetMsgHandler(HandleStreamN2kMsg);
 
 #ifdef DEBUG
-  nmea2000->EnableForward(true);
+    nmea2000->EnableForward(true);
 #endif
-
 
     nmea2000->Open();
 
@@ -217,7 +216,6 @@ void look_for_pilot()
 {
 
     pN2kDeviceList = new tN2kDeviceList(nmea2000);
-
 
     unsigned long t = r_millis();
     while (RaymarinePilot::PilotSourceAddress < 0 && r_millis() - t < 10000)
@@ -235,7 +233,6 @@ void look_for_pilot()
     {
         RaymarinePilot::PilotSourceAddress = 204;
         ROB_LOGW(NMEA2000tag, "EV-1 Pilot not found. Defaulting to %i", RaymarinePilot::PilotSourceAddress);
-
     }
     vTaskDelete(NULL);
 }
@@ -319,13 +316,17 @@ double get_speed_through_water()
     return speed_through_water;
 }
 
+void set_callback(void *cb)
+{
+    
+    RaymarinePilot::SetMessageCallback((message_callback_cb *)cb);
+}
+
 void NMEA2000_loop()
 {
     if (nmea2000)
     {
         robusto_yield();
         nmea2000->ParseMessages();
-        
     }
-
 }
