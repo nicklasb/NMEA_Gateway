@@ -15,5 +15,12 @@ menu "NMEA Gateway config"
         bool "Simulate an active NMEA network with a pilot (in NMEA.hdg topic)"
         help
             This is used during testing to simulate the response of the auto pilot.
+
+    config AUTOPILOT_NAME
+        string "The name of the autopilot on the NMEA network"
+        default "Raymarine EV-1 Course Computer"
+        help
+            This is the name the autopilot reports on the network, default is what the raymarine EV-1 goes by.
+            Tip: There is usxually a way to view the names on the network using the navigator.
 endmenu
 

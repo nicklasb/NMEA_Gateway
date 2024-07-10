@@ -15,6 +15,7 @@
 
 char *log_prefix;
 
+
 void app_main()
 {
     #ifndef CONFIG_ROBUSTO_PUBSUB_SERVER
@@ -35,18 +36,17 @@ void app_main()
     #endif
     r_delay(3000);
     // INIT NMEA
-    ROB_LOGI(log_prefix, "Starting NMEA2000 interface...");
+    ROB_LOGI(log_prefix, "Setting up NMEA2000 interface...");
     NMEA2000_Controller_setup();
-    char * taskname;
-    asprintf(&taskname, "Looking for pilot task");
-    robusto_create_task(&look_for_pilot, NULL, taskname , NULL, 0);
+    ROB_LOGI(log_prefix, "Looking for pilot");
+    look_for_pilot();
+    ROB_LOGI(log_prefix, "Start the nmea service");
+    start_nmea_service();
+    ROB_LOGI(log_prefix, "Start that the NMEA controller");
+    NMEA2000_start();
 
-    ROB_LOGI(log_prefix, "------------------------------------------");
-    ROB_LOGI(log_prefix, "NMEA gateway initiated, awaiting requests.");
-    ROB_LOGI(log_prefix, "------------------------------------------");
     while (1)
     {
-        NMEA2000_loop();
+        robusto_yield();
     }
-
 }

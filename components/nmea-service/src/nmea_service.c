@@ -5,6 +5,7 @@
 #include <robusto_incoming.h>
 #include <robusto_network_service.h>
 #include <robusto_message.h>
+#include <robusto_time.h>
 #include <robusto_pubsub_server.h>
 
 #include <NMEA2000Controller.h>
@@ -22,9 +23,10 @@
 #define TARGET_HEADING_TRUE 65360UL
 #define TARGET_HEADING_MAGNETIC 653601UL // Own differentiator
 #define HEADING_MAGNETIC 65359UL
-
+#define HEADING_TRUE 653591UL // Own differentiator
 #define SPEED_THROUGH_WATER_PGN 128259UL
 #define SPEED_COURSE_OVER_GROUND 129026UL
+#define PILOT_STATE 65379UL
 void shutdown_nmea_network_service(void);
 
 static char *nmea_log_prefix;
@@ -36,6 +38,10 @@ static ui_cb *cb_nmea;
 static uint16_t count_in = 0;
 static uint16_t count_out = 0;
 static uint16_t fail_in = 0;
+
+uint64_t last_heading_magnetic = 0;
+uint64_t last_target_heading_magnetic = 0;
+
 
 #ifdef CONFIG_SIMULATE_AP
 int32_t last_heading_magnetic = 0;
@@ -81,12 +87,12 @@ void write_server_stats()
 #endif
 }
 
-void forward_to_NMEA_hdg(int32_t value, uint32_t pgn)
+void forward_to_topic(int32_t value, uint32_t pgn, char * topic_name)
 {
-    pubsub_server_topic_t *topic = robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
+    pubsub_server_topic_t *topic = robusto_pubsub_server_find_or_create_topic(topic_name);
     if (topic)
     {
-        ROB_LOGI(nmea_log_prefix, "Forwarding data to NMEA.hdg");
+        ROB_LOGI(nmea_log_prefix, "Forwarding data to %s. pgn = %lu", topic_name, pgn);
 
         uint8_t value_len = sizeof(pgn) + sizeof(value);
         uint8_t *value_data = robusto_malloc(value_len);
@@ -103,7 +109,25 @@ void forward_to_NMEA_hdg(int32_t value, uint32_t pgn)
 
 void nmea_message_callback(int32_t value, uint32_t pgn)
 {
-    forward_to_NMEA_hdg(value, pgn);
+    if (pgn == TARGET_HEADING_MAGNETIC) {
+        if (r_millis() > last_target_heading_magnetic + 1000) {
+            last_target_heading_magnetic = r_millis();
+            forward_to_topic(value, pgn, "NMEA.hdg");
+        } else {
+            return;
+        }
+    } else
+    if (pgn == HEADING_MAGNETIC) {
+        if (r_millis() > last_heading_magnetic + 1000) {
+            last_heading_magnetic = r_millis();
+            forward_to_topic(value, pgn, "NMEA.hdg");
+        } else {
+            return;
+        }
+    } else
+    if (pgn == PILOT_STATE ) {
+        forward_to_topic(value, pgn, "NMEA.ap_out");
+    }
 }
 
 void nmea_monitor_cb()
@@ -238,7 +262,8 @@ void start_nmea_service(void)
 {
     set_callback(nmea_message_callback);    
     robusto_pubsub_server_subscribe(NULL, &on_speed_publication, "NMEA.speed");
-    robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap");
+    robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap_in");
+    robusto_pubsub_server_find_or_create_topic("NMEA.ap_out");
     robusto_pubsub_server_find_or_create_topic("NMEA.hdg");
 
     robusto_register_recurrence(&nmea_monitor);

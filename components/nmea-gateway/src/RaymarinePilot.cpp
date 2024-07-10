@@ -12,6 +12,8 @@ char *TAG = (char *)"NMEA2000-Raymarine-Pilot";
 #define TARGET_HEADING_TRUE 65360UL
 #define TARGET_HEADING_MAGNETIC 653601UL // Own differentiator
 #define HEADING_MAGNETIC 65359UL
+#define HEADING_TRUE 653591UL
+#define PILOT_STATE 65379UL
 
 double RaymarinePilot::HeadingTrue = 0;
 double RaymarinePilot::HeadingMagnetic = 0;
@@ -25,15 +27,17 @@ unsigned int pilotHeadingFilterCount = 0;
 unsigned int pilotTargetHeadingFilterCount = 0;
 
 bool RaymarinePilot::alarmWaypoint = false;
-message_callback_cb * RaymarinePilot::message_callback = NULL;
+static message_callback_cb * message_callback = NULL;
 
 void RaymarinePilot::SetMessageCallback(message_callback_cb * callback_cb) {
-  RaymarinePilot::message_callback = callback_cb;
+  message_callback = callback_cb;
 }
 
 void RaymarinePilot::CallMessageCallback(int32_t value, uint32_t pgn) {
-  if (RaymarinePilot::message_callback) {
-    RaymarinePilot::message_callback(value, pgn);
+  if (message_callback) {
+    message_callback(value, pgn);
+  } else {
+    ESP_LOGE(TAG, "Callback called, but not assigned.");
   }
 }
 // PilotSourceAddress muss aus der tN2kDeviceList ausgelesen werden. Beispiel dazu: DeviceAnalyzer.ino
@@ -322,6 +326,8 @@ bool RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg)
         RaymarinePilot::PilotMode = PILOT_MODE_TRACK;
         ESP_LOGI(TAG, "PILOT_MODE_TRACK 2?");
       }
+
+      RaymarinePilot::CallMessageCallback(RaymarinePilot::PilotMode, PILOT_STATE);
     }
   }
 
@@ -360,12 +366,12 @@ bool RaymarinePilot::HandleNMEA2000Msg(const tN2kMsg &N2kMsg)
       RaymarinePilot::HeadingMagnetic = RadToDeg(LocalHeadingMagnetic);
 
       ESP_LOGI(TAG, "Heading magnetic: %f", RaymarinePilot::HeadingMagnetic);
-      RaymarinePilot::CallMessageCallback(RaymarinePilot::HeadingMagnetic, 65359L);
+      RaymarinePilot::CallMessageCallback(RaymarinePilot::HeadingMagnetic, HEADING_MAGNETIC);
 
       if (HeadingTrue != N2kDoubleNA)
       {
         ESP_LOGI(TAG, "Heading true: %f", RaymarinePilot::HeadingTrue);
-        RaymarinePilot::CallMessageCallback(RaymarinePilot::HeadingTrue, 65360L);
+        RaymarinePilot::CallMessageCallback(RaymarinePilot::HeadingTrue, HEADING_TRUE);
       }
     }
   }

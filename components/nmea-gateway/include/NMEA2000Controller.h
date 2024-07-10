@@ -42,7 +42,7 @@ extern "C"
     void set_heading_magnetic(double value);
     void set_target_heading_magnetic(double value);
     void set_callback(void *cb);
-    void NMEA2000_loop();
+    void NMEA2000_start();
     void look_for_pilot();
 
     char *get_nmea_state_string();

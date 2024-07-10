@@ -17,7 +17,6 @@ typedef void(message_callback_cb)(int32_t value, uint32_t pgn);
 class RaymarinePilot
 {
 private:
-  static message_callback_cb *message_callback;
   static void CallMessageCallback(int32_t value, uint32_t pgn);
 
 public:

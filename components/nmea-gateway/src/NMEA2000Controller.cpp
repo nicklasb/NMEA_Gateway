@@ -26,6 +26,7 @@ tNMEA2000_esp32xx *nmea2000;
 int32_t time_since_last_can_rx = 0;
 double speed_through_water = 0;
 
+
 #define RECOVERY_RETRY_MS 1000 // How long to attempt CAN bus recovery
 // Init logging
 
@@ -214,15 +215,14 @@ bool NMEA2000_Controller_setup()
 
 void look_for_pilot()
 {
-
     pN2kDeviceList = new tN2kDeviceList(nmea2000);
-
+    ROB_LOGI(NMEA2000tag, "Looking for a pilot named \"%s\"", CONFIG_AUTOPILOT_NAME);
     unsigned long t = r_millis();
-    while (RaymarinePilot::PilotSourceAddress < 0 && r_millis() - t < 10000)
+    while (RaymarinePilot::PilotSourceAddress < 0 && r_millis() - t < 8000)
     {
         nmea2000->ParseMessages();
-        RaymarinePilot::PilotSourceAddress = getDeviceSourceAddress("Raymarine EV-1 Course Computer");
-        r_delay(50);
+        RaymarinePilot::PilotSourceAddress = getDeviceSourceAddress(CONFIG_AUTOPILOT_NAME);
+
     }
 
     if (RaymarinePilot::PilotSourceAddress >= 0)
@@ -234,7 +234,6 @@ void look_for_pilot()
         RaymarinePilot::PilotSourceAddress = 204;
         ROB_LOGW(NMEA2000tag, "EV-1 Pilot not found. Defaulting to %i", RaymarinePilot::PilotSourceAddress);
     }
-    vTaskDelete(NULL);
 }
 
 void NMEA2000_Controller_set_heading(double heading, int change)
@@ -322,11 +321,31 @@ void set_callback(void *cb)
     RaymarinePilot::SetMessageCallback((message_callback_cb *)cb);
 }
 
-void NMEA2000_loop()
+void NMEA2000_loop(void *)
 {
-    if (nmea2000)
+    ROB_LOGW(NMEA2000tag, "NMEA2000 loop task running.");
+    uint32_t loop_counter = 0;
+    while (1)
     {
-        robusto_yield();
         nmea2000->ParseMessages();
+        if (loop_counter > 10000) {
+            robusto_yield();
+            loop_counter = 0;
+        }
+        loop_counter++;
     }
+    // Won't happen but should at shutdown
+    vTaskDelete(NULL);
 }
+void NMEA2000_start() {
+    if (!nmea2000) {
+        ROB_LOGE(NMEA2000tag, "NMEA object not initialized, will not start NMEA loop.");
+        return;
+    }
+    char * taskname;
+    asprintf(&taskname, "NMEA loop task");
+    ROB_LOGW(NMEA2000tag, "Starting NMEA loop task.");
+    robusto_create_task(&NMEA2000_loop, NULL, taskname , NULL, 1);
+
+}
+
