@@ -107,12 +107,14 @@ void forward_to_topic(int32_t value, uint32_t pgn, char * topic_name)
     }
 }
 
-void nmea_message_callback(int32_t value, uint32_t pgn)
+void nmea_message_callback(double value, uint32_t pgn)
 {
+    // These are only the messages that are coming from the NMEA network that we want to propagate using Pubsub
     if (pgn == TARGET_HEADING_MAGNETIC) {
         if (r_millis() > last_target_heading_magnetic + 1000) {
             last_target_heading_magnetic = r_millis();
-            forward_to_topic(value, pgn, "NMEA.hdg");
+            // These valut
+            forward_to_topic((int32_t)(value + 0.5), pgn, "NMEA.hdg");
         } else {
             return;
         }
@@ -120,7 +122,7 @@ void nmea_message_callback(int32_t value, uint32_t pgn)
     if (pgn == HEADING_MAGNETIC) {
         if (r_millis() > last_heading_magnetic + 1000) {
             last_heading_magnetic = r_millis();
-            forward_to_topic(value, pgn, "NMEA.hdg");
+            forward_to_topic((int32_t)(value + 0.5), pgn, "NMEA.hdg");
         } else {
             return;
         }

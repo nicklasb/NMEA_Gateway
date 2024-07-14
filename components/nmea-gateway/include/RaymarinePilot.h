@@ -12,12 +12,12 @@
 extern "C" {
 #endif
 
-typedef void(message_callback_cb)(int32_t value, uint32_t pgn);
+typedef void(message_callback_cb)(double value, uint32_t pgn);
 
 class RaymarinePilot
 {
 private:
-  static void CallMessageCallback(int32_t value, uint32_t pgn);
+  static void CallMessageCallback(double value, uint32_t pgn);
 
 public:
   static double HeadingMagnetic, HeadingTrue, TargetHeadingMagnetic, TargetHeadingTrue, Variation;

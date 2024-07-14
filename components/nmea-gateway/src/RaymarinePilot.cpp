@@ -33,7 +33,7 @@ void RaymarinePilot::SetMessageCallback(message_callback_cb * callback_cb) {
   message_callback = callback_cb;
 }
 
-void RaymarinePilot::CallMessageCallback(int32_t value, uint32_t pgn) {
+void RaymarinePilot::CallMessageCallback(double value, uint32_t pgn) {
   if (message_callback) {
     message_callback(value, pgn);
   } else {
