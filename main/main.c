@@ -40,11 +40,10 @@ void app_main()
     NMEA2000_Controller_setup();
     ROB_LOGI(log_prefix, "Looking for pilot");
     look_for_pilot();
-    ROB_LOGI(log_prefix, "Start the nmea service");
-    start_nmea_service();
     ROB_LOGI(log_prefix, "Start that the NMEA controller");
     NMEA2000_start();
-
+    ROB_LOGI(log_prefix, "Enable the NMEA message callback");
+    register_nmea_service_message_callback();
     while (1)
     {
         robusto_yield();

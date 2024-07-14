@@ -258,9 +258,14 @@ void shutdown_nmea_network_service(void)
     ROB_LOGE(nmea_log_prefix, "nmea network service shutdown.");
 }
 
+
+void register_nmea_service_message_callback(void) {
+    set_callback(nmea_message_callback);   
+}
+
 void start_nmea_service(void)
 {
-    set_callback(nmea_message_callback);    
+
     robusto_pubsub_server_subscribe(NULL, &on_speed_publication, "NMEA.speed");
     robusto_pubsub_server_subscribe(NULL, &on_ap_publication, "NMEA.ap_in");
     robusto_pubsub_server_find_or_create_topic("NMEA.ap_out");

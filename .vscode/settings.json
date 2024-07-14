@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "robusto_incoming.h": "c",
-        "nmea2000controller.h": "c",
-        "compare": "c",
-        "cstdint": "c"
-    },
-    "idf.adapterTargetName": "esp32"
-}
