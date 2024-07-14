@@ -3,7 +3,7 @@ dependencies:
   # Required IDF version
   idf: ">=4.1"
 
-  robusto/robusto: "1.2.18"
+  robusto/robusto: "1.2.19"
   #NMEA2000:
   #  git: https://github.com/ttlappalainen/NMEA2000.git
   #NMEA2000_esp32xx:
