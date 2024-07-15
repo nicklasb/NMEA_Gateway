@@ -38,12 +38,12 @@ void app_main()
     // INIT NMEA
     ROB_LOGI(log_prefix, "Setting up NMEA2000 interface...");
     NMEA2000_Controller_setup();
-    ROB_LOGI(log_prefix, "Looking for pilot");
-    look_for_pilot();
     ROB_LOGI(log_prefix, "Start that the NMEA controller");
     NMEA2000_start();
     ROB_LOGI(log_prefix, "Enable the NMEA message callback");
     register_nmea_service_message_callback();
+    ROB_LOGI(log_prefix, "Looking for pilot");
+    look_for_pilot();
     while (1)
     {
         robusto_yield();
